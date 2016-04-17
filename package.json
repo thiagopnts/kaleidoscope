@@ -1,0 +1,37 @@
+{
+  "name": "360viewer",
+  "version": "1.0.0",
+  "description": "360º video/image viewer",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha test.js",
+    "build": "node_modules/.bin/webpack --progress --optimize-minimize",
+    "build-dev": "node_modules/.bin/webpack --progress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thiagopnts/360viewer.git"
+  },
+  "keywords": [
+    "360",
+    "video",
+    "image"
+  ],
+  "author": "Thiago Pontes <hello@thiago.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thiagopnts/360viewer/issues"
+  },
+  "homepage": "https://github.com/thiagopnts/360viewer#readme",
+  "devDependencies": {
+    "babel-core": "^6.7.6",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.6.0",
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.3",
+    "webpack": "^1.13.0"
+  },
+  "dependencies": {
+    "threejs360": "^1.0.0"
+  }
+}
