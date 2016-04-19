@@ -20,6 +20,7 @@ export default class ThreeSixtyRenderer {
 
   setTexture(texture) {
     this.texture = texture;
+    this.mesh = this.createMesh();
   }
 
   onResize() {
@@ -54,7 +55,6 @@ export default class ThreeSixtyRenderer {
   }
 
   render(scene, camera) {
-    this.mesh = this.createMesh();
     var container = document.querySelector(this.container);
     container.appendChild(this.renderer.domElement);
 

@@ -1,7 +1,6 @@
 import utils from './utils'
 import ThreeSixtyRenderer from './three_sixty_renderer'
 import {
-    WebGLRenderer,
     VideoTexture,
     LinearFilter,
     Scene,
@@ -17,18 +16,15 @@ export class ThreeSixtyVideoViewer {
     // provide defaults for this;
     let {height, width, container} = this;
     this.renderer = new ThreeSixtyRenderer({height, width, container});
-    this.camera = new PerspectiveCamera(80, height, width, 0.1, 100);
-    let dummyCamera = new Object3D();
-    dummyCamera.add(this.camera);
-    this.camera.target = new Vector3(0, 0, 0);
+    this.camera = new PerspectiveCamera(80, height / width, 0.1, 100);
     this.scene = this.createScene();
+    this.scene.add(this.camera);
     this.createVideoElement(this.createTexture.bind(this));
   }
 
   render() {
       var loop = () => {
           this.renderer.render(this.scene, this.camera);
-          console.log('tick');
           requestAnimationFrame(loop);
       };
       loop();
@@ -52,6 +48,8 @@ export class ThreeSixtyVideoViewer {
     texture.generateMipmaps = false;
     texture.needsUpdate = true;
     this.renderer.setTexture(texture);
+    this.scene.getObjectByName('photo').children = [this.renderer.mesh];
+    this.render();
   }
 
   createScene() {
