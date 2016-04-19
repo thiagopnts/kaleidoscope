@@ -2,7 +2,6 @@ import {
   WebGLRenderer,
   SphereGeometry,
   Matrix4,
-  Scene,
   MeshBasicMaterial,
   Mesh,
   PointLight,
@@ -16,7 +15,6 @@ export default class ThreeSixtyRenderer {
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(Math.floor(window.devicePixelRatio));
-
     window.addEventListener('resize', () => this.onResize());
   }
 
@@ -28,16 +26,7 @@ export default class ThreeSixtyRenderer {
     console.log('resize');
   }
 
-  createScene() {
-    var scene = new Scene();
-    scene.add(new PointLight(0xFFFFFF));
-    var group = new Object3D();
-    group.name = 'photo';
-    scene.add(group);
-    return scene;
-  }
-
-  createSphere() {
+  createMesh() {
     let scaleX = 1,
         scaleY = 1,
         offsetX = 0,
@@ -48,8 +37,8 @@ export default class ThreeSixtyRenderer {
         thetaLength = Math.PI;
 
     let geometry = new SphereGeometry(1, 48, 48, phiStart, phiLength, thetaStart, thetaLength);
-    geomery.applyMatrix(new Matrix4().makeScale(-1, 1, 1));
-    var uvs = geomery.faceVertexUvs[0];
+    geometry.applyMatrix(new Matrix4().makeScale(-1, 1, 1));
+    var uvs = geometry.faceVertexUvs[0];
       for (var i = 0; i < uvs.length; i++) {
         for (var j = 0; j < 3; j++) {
           uvs[i][j].x *= scaleX;
@@ -58,9 +47,17 @@ export default class ThreeSixtyRenderer {
           uvs[i][j].y += offsetY;
         }
       }
-    var material = new THREE.MeshBasicMaterial({ map: texture });
+    var material = new MeshBasicMaterial({ map: this.texture });
     var mesh = new Mesh(geometry, material);
     mesh.renderOrder = -1;
     return mesh;
+  }
+
+  render(scene, camera) {
+    this.mesh = this.createMesh();
+    var container = document.querySelector(this.container);
+    container.appendChild(this.renderer.domElement);
+
+    this.renderer.render(scene, camera);
   }
 }
