@@ -1,5 +1,6 @@
 import utils from './utils'
 import ThreeSixtyRenderer from './three_sixty_renderer'
+import CameraControls from './camera_controls'
 import {
     VideoTexture,
     LinearFilter,
@@ -19,11 +20,13 @@ export class ThreeSixtyVideoViewer {
     this.camera = new PerspectiveCamera(80, height / width, 0.1, 100);
     this.scene = this.createScene();
     this.scene.add(this.camera);
+    this.controls = new CameraControls(this.camera, this.renderer.renderer.domElement);
     this.createVideoElement(this.createTexture.bind(this));
   }
 
   render() {
       var loop = () => {
+          this.controls.update();
           this.renderer.render(this.scene, this.camera);
           requestAnimationFrame(loop);
       };
