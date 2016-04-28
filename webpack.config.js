@@ -1,6 +1,6 @@
 
 module.exports = {
-    entry: './src/index.js',
+    entry: './src/main.js',
     resolve: {
 	extensions: ['', '.js'],
     },
@@ -13,7 +13,7 @@ module.exports = {
 		query: {
 		    presets: ['es2015'],
 		}
-	    }
+    }
 	],
     },
     output: {
