@@ -1,5 +1,5 @@
 import {
-  Math as TMath,
+  Math,
   Vector2,
   Quaternion,
   Euler,
