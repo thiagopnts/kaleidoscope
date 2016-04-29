@@ -1,6 +1,7 @@
 import {
-  Math,
+  Math as TMath,
   Vector2,
+  Vector3,
   Quaternion,
   Euler,
 } from 'threejs360'
@@ -27,6 +28,10 @@ export default class CameraControls {
     this.el.addEventListener('mousemove', (e) => this.onMouseMove(e));
     this.el.addEventListener('mousedown', (e) => this.onMouseDown(e));
     this.el.addEventListener('mouseup', (e) => this.onMouseUp(e));
+    this.el.addEventListener('touchstart', (e) => this.onMouseDown({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY}));
+    this.el.addEventListener('touchmove', (e) => this.onMouseMove({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY}));
+    this.el.addEventListener('touchend', (e) => this.onMouseUp());
+
   }
 
   onMouseMove(event) {
