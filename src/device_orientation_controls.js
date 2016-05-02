@@ -16,7 +16,6 @@ export default class DeviceOrientationControls {
   }
 
   onDeviceMotionChange(deviceMotion) {
-    let acceleration = deviceMotion.acceleration;
     this.alpha = TMath.degToRad(deviceMotion.alpha);
     this.beta = TMath.degToRad(deviceMotion.beta);
     this.gamma = TMath.degToRad(deviceMotion.gamma);
