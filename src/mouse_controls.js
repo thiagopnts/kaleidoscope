@@ -6,7 +6,7 @@ import {
   Euler,
 } from 'threejs360'
 
-export default class CameraControls {
+export default class MouseControls {
   constructor(camera, element) {
     this.camera = camera;
     this.el = element;
@@ -31,8 +31,8 @@ export default class CameraControls {
     this.el.addEventListener('touchstart', (e) => this.onMouseDown({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY}));
     this.el.addEventListener('touchmove', (e) => this.onMouseMove({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY}));
     this.el.addEventListener('touchend', (e) => this.onMouseUp());
-
   }
+
 
   onMouseMove(event) {
     if (!this.isUserInteracting) {

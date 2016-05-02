@@ -1,6 +1,7 @@
 import utils from './utils'
 import ThreeSixtyRenderer from './three_sixty_renderer'
-import CameraControls from './camera_controls'
+import DeviceOrientationControls from './device_orientation_controls'
+import MouseControls from './mouse_controls'
 import {
   VideoTexture,
   LinearFilter,
@@ -20,7 +21,8 @@ export class ThreeSixtyVideoViewer {
     this.camera = new PerspectiveCamera(80, height / width, 0.1, 100);
     this.scene = this.createScene();
     this.scene.add(this.camera);
-    this.controls = new CameraControls(this.camera, this.renderer.renderer.domElement);
+    this.mouseControls = new MouseControls(this.camera, this.renderer.renderer.domElement);
+    this.motionControls = new DeviceOrientationControls(this.camera);
     this.createTexture();
   }
 
@@ -30,7 +32,8 @@ export class ThreeSixtyVideoViewer {
 
   render() {
     var loop = () => {
-      this.controls.update();
+      this.mouseControls.update();
+      this.motionControls.update();
       this.renderer.render(this.scene, this.camera);
       requestAnimationFrame(loop);
     };
