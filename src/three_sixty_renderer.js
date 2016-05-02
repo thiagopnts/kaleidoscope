@@ -15,7 +15,6 @@ export default class ThreeSixtyRenderer {
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(Math.floor(window.devicePixelRatio));
-    window.addEventListener('resize', () => this.onResize());
   }
 
   setTexture(texture) {
@@ -23,8 +22,8 @@ export default class ThreeSixtyRenderer {
     this.mesh = this.createMesh();
   }
 
-  onResize() {
-    console.log('resize');
+  setSize(size) {
+    this.renderer.setSize(size.width, size.height);
   }
 
   createMesh() {

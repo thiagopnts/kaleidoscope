@@ -30,6 +30,10 @@ export class ThreeSixtyVideoViewer {
     this._createVideoElement((el) => this._createVideoTexture(el));
   }
 
+  setSize(size) {
+    this.renderer.setSize(size);
+  }
+
   render() {
     var loop = () => {
       this.mouseControls.update();
