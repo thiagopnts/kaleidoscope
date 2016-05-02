@@ -37,7 +37,6 @@ export class ThreeSixtyVideoViewer {
   render() {
     var loop = () => {
       this.mouseControls.update();
-      this.motionControls.update();
       this.renderer.render(this.scene, this.camera);
       requestAnimationFrame(loop);
     };
