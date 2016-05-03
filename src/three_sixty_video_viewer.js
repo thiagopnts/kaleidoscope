@@ -27,7 +27,11 @@ export class ThreeSixtyVideoViewer {
   }
 
   createTexture() {
-    this._createVideoElement((el) => this._createVideoTexture(el));
+    if (this.video) {
+      this._createVideoTexture(this.video)
+    } else {
+      this._createVideoElement((el) => this._createVideoTexture(el));
+    }
   }
 
   setSize(size) {
