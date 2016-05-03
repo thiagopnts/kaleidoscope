@@ -14,8 +14,8 @@ import {
 
 export class ThreeSixtyVideoViewer {
   constructor(options={}) {
+    //TODO: provide defaults for this;
     Object.assign(this, options);
-    // provide defaults for this;
     let {height, width, container} = this;
     this.renderer = new ThreeSixtyRenderer({height, width, container});
     this.camera = new PerspectiveCamera(80, height / width, 0.1, 100);
