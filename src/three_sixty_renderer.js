@@ -16,6 +16,8 @@ export default class ThreeSixtyRenderer {
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(Math.floor(window.devicePixelRatio));
     this.el = this.renderer.domElement;
+    document.querySelector(this.container)
+      .appendChild(this.el);
   }
 
   setTexture(texture) {
@@ -48,16 +50,13 @@ export default class ThreeSixtyRenderer {
           uvs[i][j].y += offsetY;
         }
       }
-    var material = new MeshBasicMaterial({ map: this.texture });
+    var material = new MeshBasicMaterial({map: this.texture});
     var mesh = new Mesh(geometry, material);
     mesh.renderOrder = -1;
     return mesh;
   }
 
   render(scene, camera) {
-    var container = document.querySelector(this.container);
-    container.appendChild(this.renderer.domElement);
-
     this.renderer.render(scene, camera);
   }
 }
