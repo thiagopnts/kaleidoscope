@@ -21,7 +21,7 @@ export class ThreeSixtyVideoViewer {
     this.camera = new PerspectiveCamera(80, height / width, 0.1, 100);
     this.scene = this.createScene();
     this.scene.add(this.camera);
-    this.mouseControls = new MouseControls(this.camera, this.renderer.renderer.domElement);
+    this.mouseControls = new MouseControls(this.camera, this.renderer.el);
     this.motionControls = new DeviceOrientationControls(this.camera);
     this.createTexture();
   }

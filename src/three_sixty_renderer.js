@@ -15,6 +15,7 @@ export default class ThreeSixtyRenderer {
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(Math.floor(window.devicePixelRatio));
+    this.el = this.renderer.domElement;
   }
 
   setTexture(texture) {
