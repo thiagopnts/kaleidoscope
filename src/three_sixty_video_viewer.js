@@ -64,7 +64,7 @@ export class ThreeSixtyVideoViewer {
   }
 
   _createVideoTexture(el) {
-    var texture = new VideoTexture(el);
+    let texture = new VideoTexture(el);
     texture.minFilter = LinearFilter;
     texture.magFilter = LinearFilter;
     texture.format = RGBFormat;
@@ -72,12 +72,11 @@ export class ThreeSixtyVideoViewer {
     texture.needsUpdate = true;
     this.renderer.setTexture(texture);
     this.scene.getObjectByName('photo').children = [this.renderer.mesh];
-    this.render();
   }
 
   createScene() {
-    var scene = new Scene();
-    var group = new Object3D();
+    let scene = new Scene();
+    let group = new Object3D();
     group.name = 'photo';
     scene.add(group);
     return scene;
