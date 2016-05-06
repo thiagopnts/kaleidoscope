@@ -29,9 +29,15 @@ export class ThreeSixtyVideoViewer {
   createTexture() {
     if (this.video) {
       this._createVideoTexture(this.video)
+      this.video.style.display = 'none';
     } else {
       this._createVideoElement((el) => this._createVideoTexture(el));
     }
+  }
+
+  destroy() {
+    //TODO: unbind events
+    this.video.style.display = '';
   }
 
   setSize(size) {
@@ -39,7 +45,7 @@ export class ThreeSixtyVideoViewer {
   }
 
   render() {
-    var loop = () => {
+    let loop = () => {
       this.mouseControls.update();
       this.renderer.render(this.scene, this.camera);
       requestAnimationFrame(loop);
