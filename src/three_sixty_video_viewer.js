@@ -18,7 +18,7 @@ export class ThreeSixtyVideoViewer {
     Object.assign(this, options);
     let {height, width, container, containerId} = this;
     this.renderer = new ThreeSixtyRenderer({height, width, container, containerId});
-    this.camera = new PerspectiveCamera(80, height / width, 0.1, 100);
+    this.camera = new PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
     this.scene = this.createScene();
     this.scene.add(this.camera);
     this.mouseControls = new MouseControls(this.camera, this.renderer.el);

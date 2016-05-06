@@ -31,29 +31,11 @@ export default class ThreeSixtyRenderer {
   }
 
   createMesh() {
-    let scaleX = 1,
-        scaleY = 1,
-        offsetX = 0,
-        offsetY = 0,
-        phiStart = 0,
-        phiLength = Math.PI * 2,
-        thetaStart = 0,
-        thetaLength = Math.PI;
 
-    let geometry = new SphereGeometry(1, 48, 48, phiStart, phiLength, thetaStart, thetaLength);
-    geometry.applyMatrix(new Matrix4().makeScale(-1, 1, 1));
-    var uvs = geometry.faceVertexUvs[0];
-      for (var i = 0; i < uvs.length; i++) {
-        for (var j = 0; j < 3; j++) {
-          uvs[i][j].x *= scaleX;
-          uvs[i][j].x += offsetX;
-          uvs[i][j].y *= scaleY;
-          uvs[i][j].y += offsetY;
-        }
-      }
+    let geometry = new SphereGeometry(1, 50, 50);
+    geometry.scale(-1, 1, 1);
     var material = new MeshBasicMaterial({map: this.texture});
     var mesh = new Mesh(geometry, material);
-    mesh.renderOrder = -1;
     return mesh;
   }
 
