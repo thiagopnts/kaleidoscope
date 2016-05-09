@@ -29,7 +29,6 @@ export class ThreeSixtyVideoViewer {
   createTexture() {
     if (this.video) {
       this._createVideoTexture(this.video)
-      this.video.style.display = 'none';
     } else {
       this._createVideoElement((el) => this._createVideoTexture(el));
     }
@@ -45,6 +44,7 @@ export class ThreeSixtyVideoViewer {
   }
 
   render() {
+    this.video.style.display = 'none';
     let loop = () => {
       this.mouseControls.update();
       this.renderer.render(this.scene, this.camera);
