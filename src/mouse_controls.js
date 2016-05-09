@@ -7,9 +7,10 @@ import {
 } from 'threejs360'
 
 export default class MouseControls {
-  constructor(camera, element) {
+  constructor(camera, renderer) {
     this.camera = camera;
-    this.el = element;
+    this.renderer = renderer;
+    this.el = renderer.el;
     this.phi = 0;
     this.theta = 0;
     this.rotateStart = new Vector2();
@@ -18,9 +19,7 @@ export default class MouseControls {
     this.orientation = new Quaternion();
     this.euler = new Euler();
     this.isUserInteracting = false;
-    this.draggingStyle = `${this.el.style.cssText} cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: grabbing;`;
-    this.draggableStyle = `${this.el.style.cssText} cursor: -webkit-grab; cursor: -moz-grab; cursor: grab;`;
-    this.el.style.cssText = this.draggableStyle;
+    this.addDraggableStyle();
     this.bindEvents();
   }
 
@@ -33,6 +32,17 @@ export default class MouseControls {
     this.el.addEventListener('touchend', (e) => this.onMouseUp());
   }
 
+  getCurrentSizeStyle() {
+    return `height: ${this.el.style.height}; width: ${this.el.style.width};`;
+  }
+
+  addDraggingStyle() {
+    this.el.setAttribute('style', `${this.getCurrentSizeStyle()} cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: grabbing;`);
+  }
+
+  addDraggableStyle() {
+    this.el.setAttribute('style', `${this.getCurrentSizeStyle()} cursor: -webkit-grab; cursor: -moz-grab; cursor: grab;`);
+  }
 
   onMouseMove(event) {
     if (!this.isUserInteracting) {
@@ -43,21 +53,21 @@ export default class MouseControls {
     this.rotateDelta.subVectors(this.rotateEnd, this.rotateStart);
     this.rotateStart.copy(this.rotateEnd);
 
-    this.phi += 2 * Math.PI * this.rotateDelta.y / this.el.clientHeight * 0.3;
-    this.theta += 2 * Math.PI * this.rotateDelta.x / this.el.clientWidth * 0.5;
+    this.phi += 2 * Math.PI * this.rotateDelta.y / this.renderer.height * 0.3;
+    this.theta += 2 * Math.PI * this.rotateDelta.x / this.renderer.width * 0.5;
 
     // Prevent looking too far up or down.
     this.phi = TMath.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
   }
 
   onMouseDown(event) {
-    this.el.style.cssText = this.draggingStyle;
+    this.addDraggingStyle();
     this.rotateStart.set(event.clientX, event.clientY);
     this.isUserInteracting = true;
   }
 
   onMouseUp() {
-    this.el.style.cssText = this.draggableStyle;
+    this.addDraggableStyle();
     this.isUserInteracting = false;
   }
 

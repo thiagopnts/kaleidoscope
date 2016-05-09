@@ -27,6 +27,8 @@ export default class ThreeSixtyRenderer {
   }
 
   setSize(size) {
+    this.height = size.height;
+    this.width = size.width;
     this.renderer.setSize(size.width, size.height);
   }
 
