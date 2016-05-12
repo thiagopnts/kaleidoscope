@@ -61,6 +61,7 @@ export class ThreeSixtyVideoViewer {
     el.autoplay = "true";
     el.addEventListener('canplaythrough', () => cb(el));
     el.addEventListener('error', () => this.onError());
+    this.video = el;
   }
 
   _createVideoTexture(el) {
