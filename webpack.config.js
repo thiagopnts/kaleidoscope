@@ -2,19 +2,10 @@
 module.exports = {
     entry: './src/main.js',
     resolve: {
-	extensions: ['', '.js'],
+		extensions: ['', '.js'],
     },
     module: {
-	loaders: [
-	    {
-		test: /\.js$/,
-		exclude: /(node_modules|bower_components)/,
-		loader: 'babel',
-		query: {
-		    presets: ['es2015'],
-		}
-    }
-	],
+		loaders: [ { test: /\.js$/, exclude: /(node_modules|bower_components)/, loader: 'babel' } ],
     },
     output: {
         path: __dirname,
