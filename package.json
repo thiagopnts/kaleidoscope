@@ -2,7 +2,7 @@
   "name": "360viewer",
   "version": "1.0.0",
   "description": "360º video/image viewer",
-  "main": "src/index.js",
+  "main": "src/main.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha test.js",
     "build": "node_modules/.bin/webpack --progress --optimize-minimize",
@@ -39,6 +39,6 @@
     "webpack": "^1.13.0"
   },
   "dependencies": {
-    "threejs360": "^1.0.0"
+    "threejs360": "^1.0.2"
   }
 }
