@@ -1,8 +1,8 @@
 export default {
-  isIOS() {
-    return /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+  isiPhone() {
+    return !!(/(iphone)/i.test(navigator.userAgent));
   },
-  isIE11() {
-    return navigator.userAgent.match(/Trident/);
+  isIE() {
+    return /Trident|Edge/i.test(navigator.userAgent);
   }
 }

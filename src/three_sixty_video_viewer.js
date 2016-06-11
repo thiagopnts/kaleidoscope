@@ -1,8 +1,8 @@
-import utils from './utils'
 import ThreeSixtyRenderer from './three_sixty_renderer'
 import DeviceOrientationControls from './device_orientation_controls'
 import MouseControls from './mouse_controls'
 import {
+  Texture,
   VideoTexture,
   LinearFilter,
   Scene,
@@ -14,23 +14,21 @@ import {
 
 export class ThreeSixtyVideoViewer {
   constructor(options={}) {
-    //TODO: provide defaults for this;
     Object.assign(this, options);
     let {height, width, container, containerId} = this;
     this.renderer = new ThreeSixtyRenderer({height, width, container, containerId});
     this.camera = new PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
     this.scene = this.createScene();
     this.scene.add(this.camera);
-    this.mouseControls = new MouseControls(this.camera, this.renderer);
-    this.motionControls = new DeviceOrientationControls(this.camera);
-    this.createTexture();
+    this.controls = new MouseControls(this.camera, this.renderer);
+    this.setupVideo();
   }
 
-  createTexture() {
+  setupVideo() {
     if (this.video) {
-      this._createVideoTexture(this.video)
+      this.createTexture(this.video)
     } else {
-      this._createVideoElement((el) => this._createVideoTexture(el));
+      this.createVideoElement((el) => this.createTexture(el));
     }
   }
 
@@ -46,14 +44,15 @@ export class ThreeSixtyVideoViewer {
   render() {
     this.video.style.display = 'none';
     let loop = () => {
-      this.mouseControls.update();
+      this.controls.update();
       this.renderer.render(this.scene, this.camera);
+      this.callback && this.callback();
       requestAnimationFrame(loop);
     };
     loop();
   }
 
-  _createVideoElement(cb) {
+  createVideoElement(cb) {
     let el = document.createElement('video');
     el.src = this.source;
     el.loop = this.loop || false;
@@ -64,7 +63,7 @@ export class ThreeSixtyVideoViewer {
     this.video = el;
   }
 
-  _createVideoTexture(el) {
+  createTexture(el) {
     let texture = new VideoTexture(el);
     texture.minFilter = LinearFilter;
     texture.magFilter = LinearFilter;
