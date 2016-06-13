@@ -57,7 +57,8 @@ export class ThreeSixtyVideoViewer {
     el.src = this.source;
     el.loop = this.loop || false;
     el.setAttribute('crossorigin', 'anonymous');
-    el.autoplay = "true";
+    el.setAttribute('webkit-playsinline', '');
+    el.autoplay = 'true';
     el.addEventListener('canplaythrough', () => cb(el));
     el.addEventListener('error', () => this.onError());
     this.video = el;
