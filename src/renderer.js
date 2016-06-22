@@ -8,7 +8,7 @@ import {
   Object3D,
 } from 'threejs360'
 
-export default class ThreeSixtyRenderer {
+export default class Renderer {
   constructor(options) {
     Object.assign(this, options);
     this.renderer = new WebGLRenderer({antialias: false});
@@ -33,11 +33,10 @@ export default class ThreeSixtyRenderer {
   }
 
   createMesh() {
-
+    let material = new MeshBasicMaterial({map: this.texture});
     let geometry = new SphereGeometry(1, 50, 50);
     geometry.scale(-1, 1, 1);
-    var material = new MeshBasicMaterial({map: this.texture});
-    var mesh = new Mesh(geometry, material);
+    let mesh = new Mesh(geometry, material);
     return mesh;
   }
 
