@@ -26,6 +26,14 @@ export default class ThreeSixtyViewer {
     this.scene.getObjectByName('photo').children = [this.renderer.mesh];
   }
 
+  play() {
+    this.element.play && this.element.play();
+  }
+
+  pause() {
+    this.element.pause && this.element.pause();
+  }
+
   getElement() {
     if (this.video) {
       return this.video;
@@ -61,8 +69,7 @@ export default class ThreeSixtyViewer {
   }
 
   onError(err) {
-    console.log('error loading image');
-    console.log(err);
+    console.log('error', err);
   }
 
   render() {

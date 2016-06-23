@@ -10,6 +10,14 @@ export default class Audio extends ThreeSixtyViewer {
     super(options);
   }
 
+  play() {
+    this.driver.play();
+  }
+
+  pause() {
+    this.driver.pause();
+  }
+
   getElement() {
     this.driver = document.createElement('audio');
     this.driver.src = this.source;
