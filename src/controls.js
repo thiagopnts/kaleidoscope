@@ -5,6 +5,7 @@ import {
   Quaternion,
   Euler,
 } from 'threejs360'
+import utils from './utils'
 
 export default class MouseControls {
   constructor(camera, renderer) {
@@ -13,6 +14,7 @@ export default class MouseControls {
     this.el = renderer.el;
     this.phi = 0;
     this.theta = 0;
+    this.velo = utils.isiPhone() ? 0.07 : 1.6;
     this.rotateStart = new Vector2();
     this.rotateEnd = new Vector2();
     this.rotateDelta = new Vector2();
@@ -30,7 +32,9 @@ export default class MouseControls {
     this.el.addEventListener('touchstart', (e) => this.onMouseDown({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY}));
     this.el.addEventListener('touchmove', (e) => this.onMouseMove({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY}));
     this.el.addEventListener('touchend', (e) => this.onMouseUp());
+    window.addEventListener('devicemotion', (e) => this.onDeviceMotion(e));
   }
+
 
   getCurrentSizeStyle() {
     return `height: ${this.el.style.height}; width: ${this.el.style.width};`;
@@ -42,6 +46,13 @@ export default class MouseControls {
 
   addDraggableStyle() {
     this.el.setAttribute('style', `${this.getCurrentSizeStyle()} cursor: -webkit-grab; cursor: -moz-grab; cursor: grab;`);
+  }
+
+  onDeviceMotion(event) {
+    this.phi = this.phi + TMath.degToRad(event.rotationRate.alpha) * this.velo;
+    this.theta = this.theta - TMath.degToRad(event.rotationRate.beta) * this.velo * -1;
+
+    this.phi = TMath.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
   }
 
   onMouseMove(event) {
