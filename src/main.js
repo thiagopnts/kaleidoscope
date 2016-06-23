@@ -1,21 +1,19 @@
 import utils from './utils'
 
-import {ThreeSixtyVideoViewer} from './three_sixty_video_viewer'
-import {IEThreeSixtyVideoViewer} from './ie_three_sixty_video_viewer'
-import {IPhoneThreeSixtyVideoViewer} from './iphone_three_sixty_video_viewer'
+import Video from './video'
+import Image from './image'
+import Canvas from './canvas'
+import Audio from './audio'
 
-
-
-let video = options => {
-    if (utils.isIE()) {
-        return new IEThreeSixtyVideoViewer(options);
-    } else if (utils.isiPhone()) {
-        return new IPhoneThreeSixtyVideoViewer(options);
-    } else {
-        return new ThreeSixtyVideoViewer(options);
-    }
+let video = (options) => {
+  if (utils.isiPhone())
+      return new Audio(options);
+  if (utils.isIE())
+      return new Canvas(options);
+  return new Video(options);
 }
 
-export {video as Video};
-
-
+export {
+  video as Video,
+  Image,
+};

@@ -37,13 +37,12 @@ export default class ThreeSixtyViewer {
       video.setAttribute('crossorigin', 'anonymous');
       video.setAttribute('webkit-playsinline', '');
       video.autoplay = this.autoplay || true;
-      video.addEventListener('error', () => this.onError());
+      video.addEventListener('error', (err) => this.onError(err));
       return video;
     }
   }
 
   createTexture() {
-      console.log(this.video.currentSrc);
     let texture = new Texture(this.element);
     texture.minFilter = LinearFilter;
     texture.magFilter = LinearFilter;
