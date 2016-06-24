@@ -8,17 +8,18 @@ import strip from 'rollup-plugin-strip';
 
 export default {
   entry: 'src/main.js',
-  format: 'umd',
   plugins: [
     nodeResolve({
       jsnext: true,
       browser: true,
     }),
-    strip({debugger: true, sourceMap: true}),
+    strip({debugger: true, sourceMap: false}),
     commonjs(),
     babel(),
-    uglify({}, minify),
   ],
-  dest: 'dist/kaleidoscope.min.js',
   moduleName: 'Kaleidoscope',
+  targets: [
+    {dest: 'dist/kaleidoscope.js', format: 'umd'},
+    {dest: 'dist/kaleidoscope.es.js', format: 'es'},
+  ],
 };
