@@ -1,9 +1,5 @@
 import ThreeSixtyViewer from './three-sixty-viewer';
-import {
-  VideoTexture,
-  LinearFilter,
-  RGBFormat,
-} from 'threejs360';
+import THREE from 'threejs360';
 
 export default class Video extends ThreeSixtyViewer {
   constructor(options) {
@@ -11,11 +7,11 @@ export default class Video extends ThreeSixtyViewer {
   }
 
   createTexture() {
-    let texture = new VideoTexture(this.element);
+    let texture = new THREE.VideoTexture(this.element);
     //TODO: we can pass all this info through the constructor
-    texture.minFilter = LinearFilter;
-    texture.magFilter = LinearFilter;
-    texture.format = RGBFormat;
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.format = THREE.RGBFormat;
     texture.generateMipmaps = false;
     texture.needsUpdate = true;
     return texture;

@@ -1,10 +1,4 @@
-import {
-  Math as TMath,
-  Vector2,
-  Vector3,
-  Quaternion,
-  Euler,
-} from 'threejs360'
+import THREE from 'threejs360';
 import utils from './utils'
 
 export default class MouseControls {
@@ -15,11 +9,11 @@ export default class MouseControls {
     this.phi = 0;
     this.theta = 0;
     this.velo = utils.isiPhone() ? 0.07 : 1.6;
-    this.rotateStart = new Vector2();
-    this.rotateEnd = new Vector2();
-    this.rotateDelta = new Vector2();
-    this.orientation = new Quaternion();
-    this.euler = new Euler();
+    this.rotateStart = new THREE.Vector2();
+    this.rotateEnd = new THREE.Vector2();
+    this.rotateDelta = new THREE.Vector2();
+    this.orientation = new THREE.Quaternion();
+    this.euler = new THREE.Euler();
     this.isUserInteracting = false;
     this.addDraggableStyle();
     this.bindEvents();
@@ -49,10 +43,10 @@ export default class MouseControls {
   }
 
   onDeviceMotion(event) {
-    this.phi = this.phi + TMath.degToRad(event.rotationRate.alpha) * this.velo;
-    this.theta = this.theta - TMath.degToRad(event.rotationRate.beta) * this.velo * -1;
+    this.phi = this.phi + THREE.Math.degToRad(event.rotationRate.alpha) * this.velo;
+    this.theta = this.theta - THREE.Math.degToRad(event.rotationRate.beta) * this.velo * -1;
 
-    this.phi = TMath.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
+    this.phi = THREE.Math.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
   }
 
   onMouseMove(event) {
@@ -68,7 +62,7 @@ export default class MouseControls {
     this.theta += 2 * Math.PI * this.rotateDelta.x / this.renderer.width * 0.5;
 
     // Prevent looking too far up or down.
-    this.phi = TMath.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
+    this.phi = THREE.Math.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
   }
 
   onMouseDown(event) {

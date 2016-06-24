@@ -1,22 +1,15 @@
 import Renderer from './renderer'
 import utils from './utils'
 import Controls from './controls'
-import {
-  Texture,
-  LinearFilter,
-  Scene,
-  Object3D,
-  Vector3,
-  PerspectiveCamera,
-  RGBFormat,
-} from 'threejs360'
+
+import THREE from 'threejs360';
 
 export default class ThreeSixtyViewer {
   constructor(options={}) {
     Object.assign(this, options);
     let {height, width, container, containerId} = this;
     this.renderer = new Renderer({height, width, container, containerId});
-    this.camera = new PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
+    this.camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
     this.controls = new Controls(this.camera, this.renderer);
     this.scene = this.createScene();
     this.scene.add(this.camera);
@@ -51,18 +44,18 @@ export default class ThreeSixtyViewer {
   }
 
   createTexture() {
-    let texture = new Texture(this.element);
-    texture.minFilter = LinearFilter;
-    texture.magFilter = LinearFilter;
-    texture.format = RGBFormat;
+    let texture = new THREE.Texture(this.element);
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.format = THREE.RGBFormat;
     texture.generateMipmaps = false;
     texture.needsUpdate = true;
     return texture;
   }
 
   createScene() {
-    let scene = new Scene();
-    let group = new Object3D();
+    let scene = new THREE.Scene();
+    let group = new THREE.Object3D();
     group.name = 'photo';
     scene.add(group);
     return scene;
@@ -81,5 +74,4 @@ export default class ThreeSixtyViewer {
     loop();
   }
 }
-
 
