@@ -1,9 +1,4 @@
 import ThreeSixtyViewer from './three-sixty-viewer';
-import {
-  Texture,
-  LinearFilter,
-  RGBFormat,
-} from 'threejs360';
 
 export default class Canvas extends ThreeSixtyViewer {
   constructor(options) {
