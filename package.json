@@ -35,8 +35,7 @@
     "rollup-plugin-strip": "^1.1.1",
     "rollup-plugin-uglify": "^1.0.1",
     "sinon": "^1.17.3",
-    "uglify-js": "^2.6.4",
-    "webpack": "^1.13.0"
+    "uglify-js": "^2.6.4"
   },
   "dependencies": {
     "threejs360": "^1.0.2"
