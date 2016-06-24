@@ -6,6 +6,14 @@ export default class Canvas extends ThreeSixtyViewer {
     this.context = this.element.getContext('2d');
   }
 
+  play() {
+    this.video.play && this.video.play();
+  }
+
+  pause() {
+    this.video.pause && this.video.pause();
+  }
+
   getElement() {
     this.video = super.getElement();
     let canvas = document.createElement('canvas');
