@@ -92,18 +92,18 @@ Object.
 
 `viewer.render()` renders the canvas in the defined `containerId` or `container`.
 
-## Supported Browsers\*
+## Supported Browsers
 
 - Google Chrome
 - Microsoft Edge
 - Firefox
 - Internet Explorer 11
 - Safari
-- Chrome Android
+- Chrome Android\*
 - Safari iOS
 
 \*Most recent versions.
 
-## Known issues.
+## Known issues
 
-TODO.
+360 videos doesn't work in Safari, IE 11, Microsoft Edge, Android and iOS if the video is served from a different domain, due some CORS [implementation bugs](https://bugs.webkit.org/show_bug.cgi?id=135379)
