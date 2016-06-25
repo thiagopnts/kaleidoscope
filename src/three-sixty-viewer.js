@@ -6,7 +6,7 @@ import THREE from 'threejs360';
 
 export default class ThreeSixtyViewer {
   constructor(options={}) {
-    Object.assign(this, options);
+    Object.assign(this, {height: 360, width: 640}, options);
     let {height, width, container, containerId} = this;
     this.renderer = new Renderer({height, width, container, containerId});
     this.camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
