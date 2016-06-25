@@ -1,6 +1,6 @@
 {
-  "name": "360viewer",
-  "version": "1.0.0",
+  "name": "@thiagopnts/kaleidoscope",
+  "version": "0.0.1",
   "description": "360º video/image viewer",
   "main": "dist/kaleidoscope.min.js",
   "jsnext:main": "dist/kaleidoscope.es.js",
@@ -10,23 +10,26 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thiagopnts/360viewer.git"
+    "url": "git+https://github.com/thiagopnts/kaleidoscope.git"
   },
   "keywords": [
     "360",
     "video",
+    "video360",
+    "360video",
+    "360image",
+    "image360",
     "image"
   ],
   "author": "Thiago Pontes <hello@thiago.me>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/thiagopnts/360viewer/issues"
+    "url": "https://github.com/thiagopnts/kaleidoscope/issues"
   },
-  "homepage": "https://github.com/thiagopnts/360viewer#readme",
+  "homepage": "https://github.com/thiagopnts/kaleidoscope#readme",
   "devDependencies": {
     "babel-core": "^6.7.6",
     "babel-loader": "^6.2.4",
-    "babel-preset-es2015": "^6.6.0",
     "babel-preset-es2015-rollup": "^1.1.1",
     "mocha": "^2.4.5",
     "rollup": "^0.33.0",
