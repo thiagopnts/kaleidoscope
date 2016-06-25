@@ -38,7 +38,7 @@ Object.
 </dd>
 </dl>
 
-`options.source` is the source you want to render. It can be a video or an image, depending on what you're instantiating.
+`options.source` source video to be played.
 
 `options.containerId` is where you want to render the 360, this is going to be retrieved via `document.querySelector` and when you call `render()` the 360 canvas will be append to it.
 
@@ -78,7 +78,7 @@ Object.
 </dd>
 </dl>
 
-`options.source` is the source you want to render. It can be a video or an image, depending on what you're instantiating.
+`options.source` source of the image to be rendered.
 
 `options.containerId` is where you want to render the 360, this is going to be retrieved via `document.querySelector` and when you call `render()` the 360 canvas will be append to it.
 
