@@ -27,6 +27,11 @@ export default class ThreeSixtyViewer {
     this.element.pause && this.element.pause();
   }
 
+  destroy() {
+    //TODO: unbind events
+    this.video.style.display = '';
+  }
+
   setSize(size) {
     this.renderer.setSize(size);
   }
