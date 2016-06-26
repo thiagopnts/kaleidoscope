@@ -5,9 +5,14 @@ An embeddable, lightweight, dependency-free 360º video/image viewer
 [demo](http://thiago.me/kaleidoscope)
 
 ## Usage
+Get the code:
+```bash
+$ npm install kaleidoscopejs
+```
+
 Add the script to your page:
 ```html
-<script src="dist/kaleidoscope.min.js"></script>
+<script src="node_modules/kaleidoscopejs/dist/kaleidoscope.min.js"></script>
 ```
 
 #### Videos
@@ -106,4 +111,4 @@ Object.
 
 ## Known issues
 
-360 videos doesn't work in Safari, IE 11, Microsoft Edge, Android and iOS if the video is served from a different domain, due some CORS [implementation bugs](https://bugs.webkit.org/show_bug.cgi?id=135379)
+360 videos doesn't work in Safari, IE 11, Microsoft Edge, Android and iOS if the video is served from a different domain, due some CORS [implementation bugs](https://bugs.webkit.org/show_bug.cgi?id=135379).
