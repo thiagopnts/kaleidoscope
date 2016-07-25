@@ -8,9 +8,6 @@ export default class Renderer {
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(Math.floor(window.devicePixelRatio));
     this.el = this.renderer.domElement;
-
-    this.target = this.container ? this.container : document.querySelector(this.containerId);
-    this.target.appendChild(this.el);
   }
 
   setTexture(texture) {

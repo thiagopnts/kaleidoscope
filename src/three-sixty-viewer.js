@@ -8,7 +8,7 @@ export default class ThreeSixtyViewer {
   constructor(options={}) {
     Object.assign(this, {height: 360, width: 640}, options);
     let {height, width, container, containerId} = this;
-    this.renderer = new Renderer({height, width, container, containerId});
+    this.renderer = new Renderer({height, width});
     this.camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
     this.controls = new Controls(this.camera, this.renderer);
     this.scene = this.createScene();
@@ -17,6 +17,7 @@ export default class ThreeSixtyViewer {
     this.texture = this.createTexture();
     this.renderer.setTexture(this.texture);
     this.scene.getObjectByName('photo').children = [this.renderer.mesh];
+    this.target = this.container ? this.container : document.querySelector(this.containerId);
   }
 
   play() {
@@ -28,8 +29,11 @@ export default class ThreeSixtyViewer {
   }
 
   destroy() {
-    //TODO: unbind events
-    this.video.style.display = '';
+    this.element.style.display = '';
+    cancelAnimationFrame(this.animationFrameId);
+    this.target.removeChild(this.renderer.el);
+    this.controls.destroy();
+    this.element.pause && this.element.pause();
   }
 
   setSize(size) {
@@ -46,7 +50,7 @@ export default class ThreeSixtyViewer {
       video.muted = this.muted || false;
       video.setAttribute('crossorigin', 'anonymous');
       video.setAttribute('webkit-playsinline', '');
-      video.autoplay = this.autoplay || true;
+      video.autoplay = this.autoplay !== undefined ? this.autoplay : true;
       video.addEventListener('error', (err) => this.onError(err));
       return video;
     }
@@ -75,12 +79,16 @@ export default class ThreeSixtyViewer {
   }
 
   render() {
+    this.target.appendChild(this.renderer.el);
+    this.element.style.display = 'none';
+
     let loop = () => {
       this.controls.update();
       this.renderer.render(this.scene, this.camera);
-      requestAnimationFrame(loop);
+      return requestAnimationFrame(loop);
     };
-    loop();
+
+    this.animationFrameId = loop();
   }
 }
 

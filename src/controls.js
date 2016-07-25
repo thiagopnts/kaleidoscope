@@ -16,19 +16,35 @@ export default class MouseControls {
     this.euler = new THREE.Euler();
     this.isUserInteracting = false;
     this.addDraggableStyle();
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onTouchStart = e => this.onMouseDown({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY});
+    this.onTouchMove = e => this.onMouseMove({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY});
+    this.onTouchEnd = e => this.onMouseUp({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY});
+    this.onDeviceMotion = this.onDeviceMotion.bind(this);
     this.bindEvents();
   }
 
   bindEvents() {
-    this.el.addEventListener('mousemove', (e) => this.onMouseMove(e));
-    this.el.addEventListener('mousedown', (e) => this.onMouseDown(e));
-    this.el.addEventListener('mouseup', (e) => this.onMouseUp(e));
-    this.el.addEventListener('touchstart', (e) => this.onMouseDown({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY}));
-    this.el.addEventListener('touchmove', (e) => this.onMouseMove({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY}));
-    this.el.addEventListener('touchend', (e) => this.onMouseUp());
-    window.addEventListener('devicemotion', (e) => this.onDeviceMotion(e));
+    this.el.addEventListener('mousemove', this.onMouseMove);
+    this.el.addEventListener('mousedown', this.onMouseDown);
+    this.el.addEventListener('mouseup', this.onMouseUp);
+    this.el.addEventListener('touchstart', this.onTouchStart);
+    this.el.addEventListener('touchmove', this.onTouchMove);
+    this.el.addEventListener('touchend', this.onTouchEnd);
+    window.addEventListener('devicemotion', this.onDeviceMotion);
   }
 
+  destroy() {
+    this.el.removeEventListener('mousemove', this.onMouseMove);
+    this.el.removeEventListener('mousedown', this.onMouseDown);
+    this.el.removeEventListener('mouseup', this.onMouseUp);
+    this.el.removeEventListener('touchstart', this.onTouchStart);
+    this.el.removeEventListener('touchmove', this.onTouchMove);
+    this.el.removeEventListener('touchend', this.onTouchEnd);
+    window.removeEventListener('devicemotion', this.onDeviceMotion);
+  }
 
   getCurrentSizeStyle() {
     return `height: ${this.el.style.height}; width: ${this.el.style.width};`;
