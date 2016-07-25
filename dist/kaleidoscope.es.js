@@ -1492,9 +1492,6 @@ var Renderer = function () {
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(Math.floor(window.devicePixelRatio));
     this.el = this.renderer.domElement;
-
-    this.target = this.container ? this.container : document.querySelector(this.containerId);
-    this.target.appendChild(this.el);
   }
 
   createClass(Renderer, [{
@@ -1530,6 +1527,8 @@ var Renderer = function () {
 
 var MouseControls = function () {
   function MouseControls(camera, renderer) {
+    var _this = this;
+
     classCallCheck(this, MouseControls);
 
     this.camera = camera;
@@ -1545,35 +1544,43 @@ var MouseControls = function () {
     this.euler = new THREE.Euler();
     this.isUserInteracting = false;
     this.addDraggableStyle();
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onTouchStart = function (e) {
+      return _this.onMouseDown({ clientX: e.touches[0].pageX, clientY: e.touches[0].pageY });
+    };
+    this.onTouchMove = function (e) {
+      return _this.onMouseMove({ clientX: e.touches[0].pageX, clientY: e.touches[0].pageY });
+    };
+    this.onTouchEnd = function (e) {
+      return _this.onMouseUp({ clientX: e.touches[0].pageX, clientY: e.touches[0].pageY });
+    };
+    this.onDeviceMotion = this.onDeviceMotion.bind(this);
     this.bindEvents();
   }
 
   createClass(MouseControls, [{
     key: 'bindEvents',
     value: function bindEvents() {
-      var _this = this;
-
-      this.el.addEventListener('mousemove', function (e) {
-        return _this.onMouseMove(e);
-      });
-      this.el.addEventListener('mousedown', function (e) {
-        return _this.onMouseDown(e);
-      });
-      this.el.addEventListener('mouseup', function (e) {
-        return _this.onMouseUp(e);
-      });
-      this.el.addEventListener('touchstart', function (e) {
-        return _this.onMouseDown({ clientX: e.touches[0].pageX, clientY: e.touches[0].pageY });
-      });
-      this.el.addEventListener('touchmove', function (e) {
-        return _this.onMouseMove({ clientX: e.touches[0].pageX, clientY: e.touches[0].pageY });
-      });
-      this.el.addEventListener('touchend', function (e) {
-        return _this.onMouseUp();
-      });
-      window.addEventListener('devicemotion', function (e) {
-        return _this.onDeviceMotion(e);
-      });
+      this.el.addEventListener('mousemove', this.onMouseMove);
+      this.el.addEventListener('mousedown', this.onMouseDown);
+      this.el.addEventListener('mouseup', this.onMouseUp);
+      this.el.addEventListener('touchstart', this.onTouchStart);
+      this.el.addEventListener('touchmove', this.onTouchMove);
+      this.el.addEventListener('touchend', this.onTouchEnd);
+      window.addEventListener('devicemotion', this.onDeviceMotion);
+    }
+  }, {
+    key: 'destroy',
+    value: function destroy() {
+      this.el.removeEventListener('mousemove', this.onMouseMove);
+      this.el.removeEventListener('mousedown', this.onMouseDown);
+      this.el.removeEventListener('mouseup', this.onMouseUp);
+      this.el.removeEventListener('touchstart', this.onTouchStart);
+      this.el.removeEventListener('touchmove', this.onTouchMove);
+      this.el.removeEventListener('touchend', this.onTouchEnd);
+      window.removeEventListener('devicemotion', this.onDeviceMotion);
     }
   }, {
     key: 'getCurrentSizeStyle',
@@ -1650,7 +1657,7 @@ var ThreeSixtyViewer = function () {
     var container = this.container;
     var containerId = this.containerId;
 
-    this.renderer = new Renderer({ height: height, width: width, container: container, containerId: containerId });
+    this.renderer = new Renderer({ height: height, width: width });
     this.camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
     this.controls = new MouseControls(this.camera, this.renderer);
     this.scene = this.createScene();
@@ -1659,6 +1666,7 @@ var ThreeSixtyViewer = function () {
     this.texture = this.createTexture();
     this.renderer.setTexture(this.texture);
     this.scene.getObjectByName('photo').children = [this.renderer.mesh];
+    this.target = this.container ? this.container : document.querySelector(this.containerId);
   }
 
   createClass(ThreeSixtyViewer, [{
@@ -1674,8 +1682,11 @@ var ThreeSixtyViewer = function () {
   }, {
     key: 'destroy',
     value: function destroy() {
-      //TODO: unbind events
-      this.video.style.display = '';
+      this.element.style.display = '';
+      cancelAnimationFrame(this.animationFrameId);
+      this.target.removeChild(this.renderer.el);
+      this.controls.destroy();
+      this.element.pause && this.element.pause();
     }
   }, {
     key: 'setSize',
@@ -1696,7 +1707,7 @@ var ThreeSixtyViewer = function () {
         video.muted = this.muted || false;
         video.setAttribute('crossorigin', 'anonymous');
         video.setAttribute('webkit-playsinline', '');
-        video.autoplay = this.autoplay || true;
+        video.autoplay = this.autoplay !== undefined ? this.autoplay : true;
         video.addEventListener('error', function (err) {
           return _this.onError(err);
         });
@@ -1731,12 +1742,16 @@ var ThreeSixtyViewer = function () {
     value: function render() {
       var _this2 = this;
 
+      this.target.appendChild(this.renderer.el);
+      this.element.style.display = 'none';
+
       var loop = function loop() {
         _this2.controls.update();
         _this2.renderer.render(_this2.scene, _this2.camera);
-        requestAnimationFrame(loop);
+        return requestAnimationFrame(loop);
       };
-      loop();
+
+      this.animationFrameId = loop();
     }
   }]);
   return ThreeSixtyViewer;
