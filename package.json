@@ -5,8 +5,13 @@
   "main": "dist/kaleidoscope.min.js",
   "jsnext:main": "dist/kaleidoscope.es.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha test.js",
+    "test": "./node_modules/.bin/karma start --browsers Chrome --single-run",
     "build": "node_modules/.bin/rollup -c && cat dist/kaleidoscope.js | node_modules/.bin/uglifyjs --screw-ie8 -m -c > dist/kaleidoscope.min.js"
+  },
+  "babel": {
+    "presets": [
+      "es2015-rollup"
+    ]
   },
   "repository": {
     "type": "git",
@@ -30,8 +35,20 @@
   "devDependencies": {
     "babel-core": "^6.7.6",
     "babel-loader": "^6.2.4",
+    "babel-plugin-espower": "^2.3.1",
+    "babel-plugin-transform-runtime": "^6.12.0",
     "babel-preset-es2015-rollup": "^1.1.1",
-    "mocha": "^2.4.5",
+    "babel-preset-stage-2": "^6.11.0",
+    "babel-register": "^6.11.6",
+    "chai": "^3.5.0",
+    "jsdom": "^9.4.1",
+    "karma": "^1.1.2",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-jasmine": "^1.0.2",
+    "karma-mocha": "^1.1.1",
+    "karma-rollup-plugin": "^0.2.0",
+    "mocha": "^2.5.3",
     "rollup": "^0.33.0",
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-commonjs": "^3.0.2",
