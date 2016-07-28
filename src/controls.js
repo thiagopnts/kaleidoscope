@@ -2,12 +2,11 @@ import THREE from 'threejs360';
 import utils from './utils'
 
 export default class MouseControls {
-  constructor(camera, renderer) {
-    this.camera = camera;
-    this.renderer = renderer;
-    this.el = renderer.el;
+  constructor(options) {
+    Object.assign(this, options);
+    this.el = this.renderer.el;
+    this.theta = this.initialYaw * Math.PI / 180;
     this.phi = 0;
-    this.theta = 0;
     this.velo = utils.isiOS() ? 0.07 : 1.6;
     this.rotateStart = new THREE.Vector2();
     this.rotateEnd = new THREE.Vector2();
