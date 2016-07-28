@@ -59,6 +59,8 @@ Object.
 
 `options.muted` to define if the video should start muted. Defaults to `false`.
 
+`options.initialYaw` number to define initial yaw of 360, should be in degrees(45, 90, 180 etc).
+
 `options.loop` to define if the video should loop. Defaults to `false`.
 
 `options.onError` callback to when something goes wrong.
