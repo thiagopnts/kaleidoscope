@@ -1,6 +1,11 @@
 import THREE from 'threejs360';
 import utils from './utils'
 
+let easeOutBack = k => {
+  let s = 1.70158;
+  return --k * k * ((s + 1) * k + s) + 1;
+};
+
 export default class MouseControls {
   constructor(options) {
     Object.assign(this, options);
@@ -33,6 +38,28 @@ export default class MouseControls {
     this.el.addEventListener('touchmove', this.onTouchMove);
     this.el.addEventListener('touchend', this.onTouchEnd);
     window.addEventListener('devicemotion', this.onDeviceMotion);
+  }
+
+  centralize() {
+    let endTheta = this.initialYaw * Math.PI / 180;
+
+    let duration = 750;
+    let startTheta = this.theta;
+    let startPhi = this.phi;
+    let start = Date.now();
+
+    let animate = () => {
+      let progress = Date.now() - start;
+      let elapsed = progress / duration;
+      elapsed = elapsed > 1 ? 1 : elapsed;
+      if (progress >= duration) {
+        return cancelAnimationFrame(id);
+      }
+      this.theta = startTheta  + (endTheta - startTheta) * easeOutBack(elapsed);
+      this.phi = startPhi + (0 - startPhi) * easeOutBack(elapsed);
+      return requestAnimationFrame(animate);
+    };
+    let id = animate();
   }
 
   destroy() {

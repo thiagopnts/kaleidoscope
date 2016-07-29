@@ -28,6 +28,10 @@ export default class ThreeSixtyViewer {
     this.element.pause && this.element.pause();
   }
 
+  centralize() {
+    this.controls.centralize();
+  }
+
   destroy() {
     this.element.style.display = '';
     cancelAnimationFrame(this.animationFrameId);

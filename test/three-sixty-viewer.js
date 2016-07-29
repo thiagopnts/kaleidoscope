@@ -1,6 +1,7 @@
 import ThreeSixty from '../src/three-sixty-viewer';
 
 describe('360 viewer', () => {
+
   it('has a default height/width', () => {
     let viewer = new ThreeSixty();
     assert.isDefined(viewer.height);
@@ -19,5 +20,16 @@ describe('360 viewer', () => {
     let viewer = new ThreeSixty({initialYaw: 180});
 
     assert.equal(viewer.controls.theta.toFixed(2), 3.14);
+  });
+
+  it('moves back to the center', () => {
+    let viewer = new ThreeSixty({initialYaw: 180});
+    viewer.controls.theta = 1.57;
+    viewer.controls.phi = 0.78;
+    viewer.centralize();
+    setTimeout(() => {
+        assert.equal(viewer.controls.phi.toFixed(2), 0);
+        assert.equal(viewer.controls.theta.toFixed(2), 3.14);
+    }, 0);
   });
 });
