@@ -71,6 +71,8 @@ Object.
 
 `viewer.pause()` pauses the current video.
 
+`viewer.centralize()` move camera back to the original center.
+
 #### Kaleidoscope.Image
 
 ```js
@@ -95,9 +97,13 @@ Object.
 
 `options.width` width of the 360 canvas. Defaults to `640`.
 
+`options.initialYaw` number to define initial yaw of 360, should be in degrees(45, 90, 180 etc).
+
 `options.onError` callback to when something goes wrong.
 
 `viewer.render()` renders the canvas in the defined `containerId` or `container`.
+
+`viewer.centralize()` move camera back to the original center.
 
 ## Supported Browsers
 
