@@ -18,6 +18,7 @@ export default class MouseControls {
     this.rotateDelta = new THREE.Vector2();
     this.orientation = new THREE.Quaternion();
     this.euler = new THREE.Euler();
+    this.momentum = false;
     this.isUserInteracting = false;
     this.addDraggableStyle();
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -93,7 +94,7 @@ export default class MouseControls {
 
   onMouseMove(event) {
     if (!this.isUserInteracting) {
-        return;
+      return;
     }
     this.rotateEnd.set(event.clientX, event.clientY);
 
@@ -111,14 +112,26 @@ export default class MouseControls {
     this.addDraggingStyle();
     this.rotateStart.set(event.clientX, event.clientY);
     this.isUserInteracting = true;
+    this.momentum = false;
+  }
+
+  inertia() {
+    if (!this.momentum) return;
+    this.rotateDelta.y *= 0.85;
+    this.rotateDelta.x *= 0.85;
+    this.theta += 0.005 * this.rotateDelta.x;
+    this.phi += 0.005 * this.rotateDelta.y;
+    this.phi = THREE.Math.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
   }
 
   onMouseUp() {
     this.addDraggableStyle();
     this.isUserInteracting = false;
+    this.momentum = true;
   }
 
   update() {
+    this.inertia();
     this.euler.set(this.phi, this.theta, 0, 'YXZ');
     this.orientation.setFromEuler(this.euler);
     this.camera.quaternion.copy(this.orientation);
