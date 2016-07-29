@@ -13,88 +13,13 @@ var utils = {
   }
 };
 
+function interopDefault(ex) {
+	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
+}
+
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-};
-
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-var createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
-
-var get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;
-
-    if (getter === undefined) {
-      return undefined;
-    }
-
-    return getter.call(receiver);
-  }
-};
-
-var inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-};
-
-var possibleConstructorReturn = function (self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-};
 
 var index=createCommonjsModule(function(module,exports){// File:src/Three.js
 /**
@@ -1480,7 +1405,80 @@ var maxBones=allocateBones(object);var precision=renderer.getPrecision();if(mate
 for(var p=0,pl=programs.length;p<pl;p++){var programInfo=programs[p];if(programInfo.code===code){program=programInfo;++program.usedTimes;break;}}if(program===undefined){program=new THREE.WebGLProgram(renderer,code,material,parameters);programs.push(program);}return program;};this.releaseProgram=function(program){if(--program.usedTimes===0){// Remove from unordered set
 var i=programs.indexOf(program);programs[i]=programs[programs.length-1];programs.pop();// Free WebGL resources
 program.destroy();}};// Exposed for resource monitoring & error feedback via renderer.info:
-this.programs=programs;};});var THREE = index&&(typeof index==='undefined'?'undefined':_typeof(index))==='object'&&'default'in index?index['default']:index;
+this.programs=programs;};});var THREE = interopDefault(index);
+
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
+
+var get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;
+  var desc = Object.getOwnPropertyDescriptor(object, property);
+
+  if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);
+
+    if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;
+
+    if (getter === undefined) {
+      return undefined;
+    }
+
+    return getter.call(receiver);
+  }
+};
+
+var inherits = function (subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+};
+
+var possibleConstructorReturn = function (self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+};
 
 var Renderer = function () {
   function Renderer(options) {
@@ -1525,23 +1523,28 @@ var Renderer = function () {
   return Renderer;
 }();
 
+var easeOutBack = function easeOutBack(k) {
+  var s = 1.70158;
+  return --k * k * ((s + 1) * k + s) + 1;
+};
+
 var MouseControls = function () {
-  function MouseControls(camera, renderer) {
+  function MouseControls(options) {
     var _this = this;
 
     classCallCheck(this, MouseControls);
 
-    this.camera = camera;
-    this.renderer = renderer;
-    this.el = renderer.el;
+    Object.assign(this, options);
+    this.el = this.renderer.el;
+    this.theta = this.initialYaw * Math.PI / 180;
     this.phi = 0;
-    this.theta = 0;
     this.velo = utils.isiOS() ? 0.07 : 1.6;
     this.rotateStart = new THREE.Vector2();
     this.rotateEnd = new THREE.Vector2();
     this.rotateDelta = new THREE.Vector2();
     this.orientation = new THREE.Quaternion();
     this.euler = new THREE.Euler();
+    this.momentum = false;
     this.isUserInteracting = false;
     this.addDraggableStyle();
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -1570,6 +1573,31 @@ var MouseControls = function () {
       this.el.addEventListener('touchmove', this.onTouchMove);
       this.el.addEventListener('touchend', this.onTouchEnd);
       window.addEventListener('devicemotion', this.onDeviceMotion);
+    }
+  }, {
+    key: 'centralize',
+    value: function centralize() {
+      var _this2 = this;
+
+      var endTheta = this.initialYaw * Math.PI / 180;
+
+      var duration = 750;
+      var startTheta = this.theta;
+      var startPhi = this.phi;
+      var start = Date.now();
+
+      var animate = function animate() {
+        var progress = Date.now() - start;
+        var elapsed = progress / duration;
+        elapsed = elapsed > 1 ? 1 : elapsed;
+        if (progress >= duration) {
+          return cancelAnimationFrame(id);
+        }
+        _this2.theta = startTheta + (endTheta - startTheta) * easeOutBack(elapsed);
+        _this2.phi = startPhi + (0 - startPhi) * easeOutBack(elapsed);
+        return requestAnimationFrame(animate);
+      };
+      var id = animate();
     }
   }, {
     key: 'destroy',
@@ -1628,16 +1656,29 @@ var MouseControls = function () {
       this.addDraggingStyle();
       this.rotateStart.set(event.clientX, event.clientY);
       this.isUserInteracting = true;
+      this.momentum = false;
+    }
+  }, {
+    key: 'inertia',
+    value: function inertia() {
+      if (!this.momentum) return;
+      this.rotateDelta.y *= 0.85;
+      this.rotateDelta.x *= 0.85;
+      this.theta += 0.005 * this.rotateDelta.x;
+      this.phi += 0.005 * this.rotateDelta.y;
+      this.phi = THREE.Math.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
     }
   }, {
     key: 'onMouseUp',
     value: function onMouseUp() {
       this.addDraggableStyle();
       this.isUserInteracting = false;
+      this.momentum = true;
     }
   }, {
     key: 'update',
     value: function update() {
+      this.inertia();
       this.euler.set(this.phi, this.theta, 0, 'YXZ');
       this.orientation.setFromEuler(this.euler);
       this.camera.quaternion.copy(this.orientation);
@@ -1651,15 +1692,16 @@ var ThreeSixtyViewer = function () {
     var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
     classCallCheck(this, ThreeSixtyViewer);
 
-    Object.assign(this, { height: 360, width: 640 }, options);
+    Object.assign(this, { height: 360, width: 640, initialYaw: 90 }, options);
     var height = this.height;
     var width = this.width;
     var container = this.container;
     var containerId = this.containerId;
+    var initialYaw = this.initialYaw;
 
     this.renderer = new Renderer({ height: height, width: width });
     this.camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
-    this.controls = new MouseControls(this.camera, this.renderer);
+    this.controls = new MouseControls({ camera: this.camera, renderer: this.renderer, initialYaw: initialYaw });
     this.scene = this.createScene();
     this.scene.add(this.camera);
     this.element = this.getElement();
@@ -1678,6 +1720,11 @@ var ThreeSixtyViewer = function () {
     key: 'pause',
     value: function pause() {
       this.element.pause && this.element.pause();
+    }
+  }, {
+    key: 'centralize',
+    value: function centralize() {
+      this.controls.centralize();
     }
   }, {
     key: 'destroy',
