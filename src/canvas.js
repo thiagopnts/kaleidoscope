@@ -23,6 +23,7 @@ export default class Canvas extends ThreeSixtyViewer {
   }
 
   render() {
+    this.target.appendChild(this.renderer.el);
     let loop = () => {
       this.context.clearRect(0, 0, this.width, this.height);
       this.context.drawImage(this.video, 0, 0, this.width, this.height);
