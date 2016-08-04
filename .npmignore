@@ -5,4 +5,5 @@ kaleidoscope.gif
 .git
 .hg
 .npmrc
+*.mp4
 npm-debug.log
