@@ -75,16 +75,16 @@ export default class MouseControls {
     window.removeEventListener('devicemotion', this.onDeviceMotion);
   }
 
-  getCurrentSizeStyle() {
-    return `height: ${this.el.style.height}; width: ${this.el.style.width};`;
+  getCurrentStyle() {
+    return `height: ${this.el.style.height}; width: ${this.el.style.width}; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,0);`;
   }
 
   addDraggingStyle() {
-    this.el.setAttribute('style', `${this.getCurrentSizeStyle()} cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: grabbing;`);
+    this.el.setAttribute('style', `${this.getCurrentStyle()} cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: grabbing;`);
   }
 
   addDraggableStyle() {
-    this.el.setAttribute('style', `${this.getCurrentSizeStyle()} cursor: -webkit-grab; cursor: -moz-grab; cursor: grab;`);
+    this.el.setAttribute('style', `${this.getCurrentStyle()} cursor: -webkit-grab; cursor: -moz-grab; cursor: grab;`);
   }
 
   onDeviceMotion(event) {
