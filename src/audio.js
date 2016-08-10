@@ -38,12 +38,16 @@ export default class Audio extends ThreeSixtyViewer {
   }
 
   render() {
+    this.target.appendChild(this.renderer.el);
+    this.element.style.display = 'none';
     let loop = () => {
       this.controls.update();
       this.renderer.render(this.scene, this.camera);
-      this.element.currentTime = this.driver.currentTime;
-      requestAnimationFrame(loop);
+      if (this.element.readyState === 4) {
+        this.element.currentTime = this.driver.currentTime;
+      }
+      return requestAnimationFrame(loop);
     };
-    loop();
+    this.animationFrameId = loop();
   }
 }
