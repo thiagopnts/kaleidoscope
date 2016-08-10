@@ -32,6 +32,7 @@ export default class MouseControls {
   }
 
   bindEvents() {
+    this.el.addEventListener('mouseleave', this.onMouseUp);
     this.el.addEventListener('mousemove', this.onMouseMove);
     this.el.addEventListener('mousedown', this.onMouseDown);
     this.el.addEventListener('mouseup', this.onMouseUp);
@@ -64,6 +65,7 @@ export default class MouseControls {
   }
 
   destroy() {
+    this.el.removeEventListener('mouseleave', this.onMouseUp);
     this.el.removeEventListener('mousemove', this.onMouseMove);
     this.el.removeEventListener('mousedown', this.onMouseDown);
     this.el.removeEventListener('mouseup', this.onMouseUp);
