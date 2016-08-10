@@ -6,7 +6,7 @@ let easeOutBack = k => {
   return --k * k * ((s + 1) * k + s) + 1;
 };
 
-export default class MouseControls {
+export default class Controls {
   constructor(options) {
     Object.assign(this, options);
     this.el = this.renderer.el;
@@ -88,10 +88,10 @@ export default class MouseControls {
   }
 
   onDeviceMotion(event) {
-    this.phi = this.phi + THREE.Math.degToRad(event.rotationRate.alpha) * this.velo;
+    this.phi = this.verticalPanning ? this.phi + THREE.Math.degToRad(event.rotationRate.alpha) * this.velo : this.phi;
     this.theta = this.theta - THREE.Math.degToRad(event.rotationRate.beta) * this.velo * -1;
 
-    this.phi = THREE.Math.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
+    this.adjustPhi();
   }
 
   onMouseMove(event) {
@@ -103,11 +103,14 @@ export default class MouseControls {
     this.rotateDelta.subVectors(this.rotateEnd, this.rotateStart);
     this.rotateStart.copy(this.rotateEnd);
 
-    this.phi += 2 * Math.PI * this.rotateDelta.y / this.renderer.height * 0.3;
+    this.phi = this.verticalPanning ? this.phi + 2 * Math.PI * this.rotateDelta.y / this.renderer.height * 0.3 : this.phi;
     this.theta += 2 * Math.PI * this.rotateDelta.x / this.renderer.width * 0.5;
+    this.adjustPhi();
+  }
 
+  adjustPhi() {
     // Prevent looking too far up or down.
-    this.phi = THREE.Math.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
+    this.phi = THREE.Math.clamp(this.phi, -Math.PI / 1.95, Math.PI / 1.95);
   }
 
   onMouseDown(event) {
@@ -122,8 +125,8 @@ export default class MouseControls {
     this.rotateDelta.y *= 0.85;
     this.rotateDelta.x *= 0.85;
     this.theta += 0.005 * this.rotateDelta.x;
-    this.phi += 0.005 * this.rotateDelta.y;
-    this.phi = THREE.Math.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
+    this.phi = this.verticalPanning ? this.phi + 0.005 * this.rotateDelta.y : this.phi;
+    this.adjustPhi();
   }
 
   onMouseUp() {
