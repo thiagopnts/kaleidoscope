@@ -26,7 +26,7 @@ export default class MouseControls {
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onTouchStart = e => this.onMouseDown({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY});
     this.onTouchMove = e => this.onMouseMove({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY});
-    this.onTouchEnd = e => this.onMouseUp({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY});
+    this.onTouchEnd = _ => this.onMouseUp();
     this.onDeviceMotion = this.onDeviceMotion.bind(this);
     this.bindEvents();
   }
