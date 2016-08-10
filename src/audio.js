@@ -21,7 +21,9 @@ export default class Audio extends ThreeSixtyViewer {
     this.driver.muted = this.muted || false;
     this.driver.setAttribute('crossorigin', 'anonymous');
     this.driver.autoplay = this.autoplay || true;
-    return super.getElement();
+    let video = super.getElement();
+    video.load();
+    return video;
   }
 
   createTexture() {
