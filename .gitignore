@@ -1,3 +1,5 @@
 dist/kaleidoscope.js
 node_modules/
 .DS_Store
+*.mp4
+*.html
