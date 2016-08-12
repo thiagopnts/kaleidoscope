@@ -88,8 +88,21 @@ export default class Controls {
   }
 
   onDeviceMotion(event) {
-    this.phi = this.verticalPanning ? this.phi + THREE.Math.degToRad(event.rotationRate.alpha) * this.velo : this.phi;
-    this.theta = this.theta - THREE.Math.degToRad(event.rotationRate.beta) * this.velo * -1;
+    let portrait = event.portrait ? event.portrait : window.matchMedia("(orientation: portrait)").matches;
+    let landscape = event.landscape ? event.landscape : window.matchMedia("(orientation: landscape)").matches;
+    let orientation = event.orientation || window.orientation || -90;
+    let alpha = THREE.Math.degToRad(event.rotationRate.alpha);
+    let beta = THREE.Math.degToRad(event.rotationRate.beta);
+
+    if (portrait) {
+      this.phi = this.verticalPanning ? this.phi + alpha * this.velo : this.phi;
+      this.theta = this.theta - beta * this.velo * -1;
+    } else {
+      if (this.verticalPanning) {
+        this.phi = orientation === -90 ? this.phi + beta * this.velo : this.phi - beta * this.velo;
+      }
+      this.theta = orientation === -90 ? this.theta - alpha * this.velo: this.theta + alpha * this.velo;
+    }
 
     this.adjustPhi();
   }
