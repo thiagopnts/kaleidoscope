@@ -1528,11 +1528,11 @@ var easeOutBack = function easeOutBack(k) {
   return --k * k * ((s + 1) * k + s) + 1;
 };
 
-var MouseControls = function () {
-  function MouseControls(options) {
+var Controls = function () {
+  function Controls(options) {
     var _this = this;
 
-    classCallCheck(this, MouseControls);
+    classCallCheck(this, Controls);
 
     Object.assign(this, options);
     this.el = this.renderer.el;
@@ -1556,16 +1556,17 @@ var MouseControls = function () {
     this.onTouchMove = function (e) {
       return _this.onMouseMove({ clientX: e.touches[0].pageX, clientY: e.touches[0].pageY });
     };
-    this.onTouchEnd = function (e) {
-      return _this.onMouseUp({ clientX: e.touches[0].pageX, clientY: e.touches[0].pageY });
+    this.onTouchEnd = function (_) {
+      return _this.onMouseUp();
     };
     this.onDeviceMotion = this.onDeviceMotion.bind(this);
     this.bindEvents();
   }
 
-  createClass(MouseControls, [{
+  createClass(Controls, [{
     key: 'bindEvents',
     value: function bindEvents() {
+      this.el.addEventListener('mouseleave', this.onMouseUp);
       this.el.addEventListener('mousemove', this.onMouseMove);
       this.el.addEventListener('mousedown', this.onMouseDown);
       this.el.addEventListener('mouseup', this.onMouseUp);
@@ -1602,6 +1603,7 @@ var MouseControls = function () {
   }, {
     key: 'destroy',
     value: function destroy() {
+      this.el.removeEventListener('mouseleave', this.onMouseUp);
       this.el.removeEventListener('mousemove', this.onMouseMove);
       this.el.removeEventListener('mousedown', this.onMouseDown);
       this.el.removeEventListener('mouseup', this.onMouseUp);
@@ -1611,27 +1613,40 @@ var MouseControls = function () {
       window.removeEventListener('devicemotion', this.onDeviceMotion);
     }
   }, {
-    key: 'getCurrentSizeStyle',
-    value: function getCurrentSizeStyle() {
-      return 'height: ' + this.el.style.height + '; width: ' + this.el.style.width + ';';
+    key: 'getCurrentStyle',
+    value: function getCurrentStyle() {
+      return 'height: ' + this.el.style.height + '; width: ' + this.el.style.width + '; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,0);';
     }
   }, {
     key: 'addDraggingStyle',
     value: function addDraggingStyle() {
-      this.el.setAttribute('style', this.getCurrentSizeStyle() + ' cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: grabbing;');
+      this.el.setAttribute('style', this.getCurrentStyle() + ' cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: grabbing;');
     }
   }, {
     key: 'addDraggableStyle',
     value: function addDraggableStyle() {
-      this.el.setAttribute('style', this.getCurrentSizeStyle() + ' cursor: -webkit-grab; cursor: -moz-grab; cursor: grab;');
+      this.el.setAttribute('style', this.getCurrentStyle() + ' cursor: -webkit-grab; cursor: -moz-grab; cursor: grab;');
     }
   }, {
     key: 'onDeviceMotion',
     value: function onDeviceMotion(event) {
-      this.phi = this.phi + THREE.Math.degToRad(event.rotationRate.alpha) * this.velo;
-      this.theta = this.theta - THREE.Math.degToRad(event.rotationRate.beta) * this.velo * -1;
+      var portrait = event.portrait ? event.portrait : window.matchMedia("(orientation: portrait)").matches;
+      var landscape = event.landscape ? event.landscape : window.matchMedia("(orientation: landscape)").matches;
+      var orientation = event.orientation || window.orientation || -90;
+      var alpha = THREE.Math.degToRad(event.rotationRate.alpha);
+      var beta = THREE.Math.degToRad(event.rotationRate.beta);
 
-      this.phi = THREE.Math.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
+      if (portrait) {
+        this.phi = this.verticalPanning ? this.phi + alpha * this.velo : this.phi;
+        this.theta = this.theta - beta * this.velo * -1;
+      } else {
+        if (this.verticalPanning) {
+          this.phi = orientation === -90 ? this.phi + beta * this.velo : this.phi - beta * this.velo;
+        }
+        this.theta = orientation === -90 ? this.theta - alpha * this.velo : this.theta + alpha * this.velo;
+      }
+
+      this.adjustPhi();
     }
   }, {
     key: 'onMouseMove',
@@ -1644,11 +1659,15 @@ var MouseControls = function () {
       this.rotateDelta.subVectors(this.rotateEnd, this.rotateStart);
       this.rotateStart.copy(this.rotateEnd);
 
-      this.phi += 2 * Math.PI * this.rotateDelta.y / this.renderer.height * 0.3;
+      this.phi = this.verticalPanning ? this.phi + 2 * Math.PI * this.rotateDelta.y / this.renderer.height * 0.3 : this.phi;
       this.theta += 2 * Math.PI * this.rotateDelta.x / this.renderer.width * 0.5;
-
+      this.adjustPhi();
+    }
+  }, {
+    key: 'adjustPhi',
+    value: function adjustPhi() {
       // Prevent looking too far up or down.
-      this.phi = THREE.Math.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
+      this.phi = THREE.Math.clamp(this.phi, -Math.PI / 1.95, Math.PI / 1.95);
     }
   }, {
     key: 'onMouseDown',
@@ -1665,8 +1684,8 @@ var MouseControls = function () {
       this.rotateDelta.y *= 0.85;
       this.rotateDelta.x *= 0.85;
       this.theta += 0.005 * this.rotateDelta.x;
-      this.phi += 0.005 * this.rotateDelta.y;
-      this.phi = THREE.Math.clamp(this.phi, -Math.PI / 2, Math.PI / 2);
+      this.phi = this.verticalPanning ? this.phi + 0.005 * this.rotateDelta.y : this.phi;
+      this.adjustPhi();
     }
   }, {
     key: 'onMouseUp',
@@ -1684,7 +1703,7 @@ var MouseControls = function () {
       this.camera.quaternion.copy(this.orientation);
     }
   }]);
-  return MouseControls;
+  return Controls;
 }();
 
 var ThreeSixtyViewer = function () {
@@ -1692,16 +1711,17 @@ var ThreeSixtyViewer = function () {
     var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
     classCallCheck(this, ThreeSixtyViewer);
 
-    Object.assign(this, { height: 360, width: 640, initialYaw: 90 }, options);
+    Object.assign(this, { height: 360, width: 640, initialYaw: 90, verticalPanning: true }, options);
     var height = this.height;
     var width = this.width;
     var container = this.container;
     var containerId = this.containerId;
     var initialYaw = this.initialYaw;
+    var verticalPanning = this.verticalPanning;
 
     this.renderer = new Renderer({ height: height, width: width });
     this.camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
-    this.controls = new MouseControls({ camera: this.camera, renderer: this.renderer, initialYaw: initialYaw });
+    this.controls = new Controls({ camera: this.camera, renderer: this.renderer, initialYaw: initialYaw, verticalPanning: verticalPanning });
     this.scene = this.createScene();
     this.scene.add(this.camera);
     this.element = this.getElement();
@@ -1884,15 +1904,17 @@ var Canvas = function (_ThreeSixtyViewer) {
     value: function render() {
       var _this2 = this;
 
+      this.target.appendChild(this.renderer.el);
+      this.element.style.display = 'none';
       var loop = function loop() {
         _this2.context.clearRect(0, 0, _this2.width, _this2.height);
         _this2.context.drawImage(_this2.video, 0, 0, _this2.width, _this2.height);
         _this2.controls.update();
         _this2.renderer.render(_this2.scene, _this2.camera);
         _this2.renderer.mesh.material.map.needsUpdate = true;
-        requestAnimationFrame(loop);
+        return requestAnimationFrame(loop);
       };
-      loop();
+      this.animationFrameId = loop();
     }
   }]);
   return Canvas;
@@ -1925,7 +1947,9 @@ var Audio = function (_ThreeSixtyViewer) {
       this.driver.muted = this.muted || false;
       this.driver.setAttribute('crossorigin', 'anonymous');
       this.driver.autoplay = this.autoplay || true;
-      return get(Object.getPrototypeOf(Audio.prototype), 'getElement', this).call(this);
+      var video = get(Object.getPrototypeOf(Audio.prototype), 'getElement', this).call(this);
+      video.load();
+      return video;
     }
   }, {
     key: 'createTexture',
@@ -1944,13 +1968,17 @@ var Audio = function (_ThreeSixtyViewer) {
     value: function render() {
       var _this2 = this;
 
+      this.target.appendChild(this.renderer.el);
+      this.element.style.display = 'none';
       var loop = function loop() {
         _this2.controls.update();
         _this2.renderer.render(_this2.scene, _this2.camera);
-        _this2.element.currentTime = _this2.driver.currentTime;
-        requestAnimationFrame(loop);
+        if (_this2.element.readyState === 4) {
+          _this2.element.currentTime = _this2.driver.currentTime;
+        }
+        return requestAnimationFrame(loop);
       };
-      loop();
+      this.animationFrameId = loop();
     }
   }]);
   return Audio;
