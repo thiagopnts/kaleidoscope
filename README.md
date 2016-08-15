@@ -65,6 +65,8 @@ Object.
 
 `options.onError` callback to when something goes wrong.
 
+`options.verticalPanning` disables vertical panning. Defaults to `false`.
+
 `viewer.render()` renders the canvas in the defined `containerId` or `container`.
 
 `viewer.play()` starts the current video. Useful for mobile.
