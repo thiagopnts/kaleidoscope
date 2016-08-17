@@ -6,8 +6,18 @@
   "jsnext:main": "dist/kaleidoscope.es.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start --browsers Chrome --single-run",
-    "build": "node_modules/.bin/rollup -c && cat dist/kaleidoscope.js | node_modules/.bin/uglifyjs --screw-ie8 -m -c > dist/kaleidoscope.min.js"
+    "build": "node_modules/.bin/rollup -c && cat dist/kaleidoscope.js | node_modules/.bin/uglifyjs --screw-ie8 -m -c > dist/kaleidoscope.min.js && cat dist/kaleidoscope.iife.js | node_modules/.bin/uglifyjs --screw-ie8 -m -c > dist/kaleidoscope.iife.min.js"
   },
+  "files": [
+    "package.json",
+    "LICENSE",
+    "README.md",
+    "dist/kaleidoscope.es.js",
+    "dist/kaleidoscope.iife.min.js",
+    "dist/kaleidoscope.min.js",
+    "src",
+    "test"
+  ],
   "babel": {
     "presets": [
       "es2015-rollup"
@@ -59,6 +69,6 @@
     "uglify-js": "^2.6.4"
   },
   "dependencies": {
-    "threejs360": "^1.0.2"
+    "threejs360": "1.0.3"
   }
 }

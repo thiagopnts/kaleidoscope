@@ -1,4 +1,5 @@
 dist/kaleidoscope.js
+dist/kaleidoscope.iife.js
 node_modules/
 .DS_Store
 *.mp4

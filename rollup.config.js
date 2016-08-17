@@ -18,8 +18,10 @@ export default {
     babel(),
   ],
   moduleName: 'Kaleidoscope',
+  moduleId: 'kaleidoscope',
   targets: [
     {dest: 'dist/kaleidoscope.js', format: 'umd'},
+    {dest: 'dist/kaleidoscope.iife.js', format: 'iife'},
     {dest: 'dist/kaleidoscope.es.js', format: 'es'},
   ],
 };
