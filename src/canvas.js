@@ -14,6 +14,11 @@ export default class Canvas extends ThreeSixtyViewer {
     this.video.pause && this.video.pause();
   }
 
+  destroy() {
+    this.video.style.display = '';
+    super.destroy();
+  }
+
   getElement() {
     this.video = super.getElement();
     let canvas = document.createElement('canvas');
@@ -24,7 +29,7 @@ export default class Canvas extends ThreeSixtyViewer {
 
   render() {
     this.target.appendChild(this.renderer.el);
-    this.element.style.display = 'none';
+    this.video.style.display = 'none';
     let loop = () => {
       this.context.clearRect(0, 0, this.width, this.height);
       this.context.drawImage(this.video, 0, 0, this.width, this.height);

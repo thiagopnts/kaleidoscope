@@ -40,4 +40,27 @@ describe('360 viewer', () => {
     assert.equal(viewer.controls.phi, 0);
     assert.equal(viewer.controls.theta.toFixed(2), 1.57);
   });
+
+  it('creates an element with the given source and defaults to a video tag', () => {
+    let viewer = new ThreeSixty({source: 'foo.mp4'});
+    assert.ok(viewer.element.src.endsWith('foo.mp4'));
+  });
+
+  it('accepts a pre-cooked element to be used as a media source', () => {
+    let video = document.createElement('video');
+    video.src = 'foo.mp4';
+    let viewer = new ThreeSixty({source: video});
+    assert.ok(viewer.element.src.endsWith('foo.mp4'));
+    assert.equal(viewer.element, video);
+  });
+
+  it('hides element on render', () => {
+    let video = document.createElement('video');
+    video.src = 'foo.mp4';
+    let viewer = new ThreeSixty({source: video, container: document.createElement('div')});
+    viewer.render();
+    assert.equal(viewer.element.style.display, 'none');
+    viewer.destroy();
+    assert.equal(viewer.element.style.display, '');
+  });
 });

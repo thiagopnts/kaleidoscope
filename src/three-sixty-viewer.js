@@ -45,19 +45,17 @@ export default class ThreeSixtyViewer {
   }
 
   getElement() {
-    if (this.video) {
-      return this.video;
-    } else {
-      let video = document.createElement('video');
-      video.src = this.source;
-      video.loop = this.loop || false;
-      video.muted = this.muted || false;
-      video.setAttribute('crossorigin', 'anonymous');
-      video.setAttribute('webkit-playsinline', '');
-      video.autoplay = this.autoplay !== undefined ? this.autoplay : true;
-      video.addEventListener('error', (err) => this.onError(err));
-      return video;
-    }
+    if (this.source && this.source.tagName)
+      return this.source;
+    let video = document.createElement('video');
+    video.src = this.source;
+    video.loop = this.loop || false;
+    video.muted = this.muted || false;
+    video.setAttribute('crossorigin', 'anonymous');
+    video.setAttribute('webkit-playsinline', '');
+    video.autoplay = this.autoplay !== undefined ? this.autoplay : true;
+    video.addEventListener('error', (err) => this.onError(err));
+    return video;
   }
 
   createTexture() {

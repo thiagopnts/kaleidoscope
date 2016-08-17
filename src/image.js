@@ -6,6 +6,8 @@ export default class Image extends ThreeSixtyViewer {
   }
 
   getElement() {
+    if (this.source && this.source.tagName)
+      return this.source;
     let image = document.createElement('img');
     image.setAttribute('crossorigin', 'anonymous');
     image.src = this.source;
