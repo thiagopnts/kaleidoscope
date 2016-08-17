@@ -21,11 +21,11 @@ function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
-var index=createCommonjsModule(function(module,exports){// File:src/Three.js
+var index=createCommonjsModule(function(module){// File:src/Three.js
 /**
  * @author mrdoob / http://mrdoob.com/
  */var THREE={REVISION:'75'};//
-if(typeof define==='function'&&define.amd){define('three',THREE);}else if('undefined'!==typeof exports&&'undefined'!==typeof module){module.exports=THREE;}//
+module.exports=THREE;//
 if(Number.EPSILON===undefined){Number.EPSILON=Math.pow(2,-52);}//
 if(Math.sign===undefined){// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign
 Math.sign=function(x){return x<0?-1:x>0?1:+x;};}if(Function.prototype.name===undefined&&Object.defineProperty!==undefined){// Missing in IE9-11.
@@ -1765,21 +1765,18 @@ var ThreeSixtyViewer = function () {
     value: function getElement() {
       var _this = this;
 
-      if (this.video) {
-        return this.video;
-      } else {
-        var video = document.createElement('video');
-        video.src = this.source;
-        video.loop = this.loop || false;
-        video.muted = this.muted || false;
-        video.setAttribute('crossorigin', 'anonymous');
-        video.setAttribute('webkit-playsinline', '');
-        video.autoplay = this.autoplay !== undefined ? this.autoplay : true;
-        video.addEventListener('error', function (err) {
-          return _this.onError(err);
-        });
-        return video;
-      }
+      if (this.source && this.source.tagName) return this.source;
+      var video = document.createElement('video');
+      video.src = this.source;
+      video.loop = this.loop || false;
+      video.muted = this.muted || false;
+      video.setAttribute('crossorigin', 'anonymous');
+      video.setAttribute('webkit-playsinline', '');
+      video.autoplay = this.autoplay !== undefined ? this.autoplay : true;
+      video.addEventListener('error', function (err) {
+        return _this.onError(err);
+      });
+      return video;
     }
   }, {
     key: 'createTexture',
@@ -1859,6 +1856,7 @@ var Image = function (_ThreeSixtyViewer) {
   createClass(Image, [{
     key: 'getElement',
     value: function getElement() {
+      if (this.source && this.source.tagName) return this.source;
       var image = document.createElement('img');
       image.setAttribute('crossorigin', 'anonymous');
       image.src = this.source;
@@ -1891,6 +1889,12 @@ var Canvas = function (_ThreeSixtyViewer) {
       this.video.pause && this.video.pause();
     }
   }, {
+    key: 'destroy',
+    value: function destroy() {
+      this.video.style.display = '';
+      get(Object.getPrototypeOf(Canvas.prototype), 'destroy', this).call(this);
+    }
+  }, {
     key: 'getElement',
     value: function getElement() {
       this.video = get(Object.getPrototypeOf(Canvas.prototype), 'getElement', this).call(this);
@@ -1905,7 +1909,7 @@ var Canvas = function (_ThreeSixtyViewer) {
       var _this2 = this;
 
       this.target.appendChild(this.renderer.el);
-      this.element.style.display = 'none';
+      this.video.style.display = 'none';
       var loop = function loop() {
         _this2.context.clearRect(0, 0, _this2.width, _this2.height);
         _this2.context.drawImage(_this2.video, 0, 0, _this2.width, _this2.height);
@@ -1941,13 +1945,24 @@ var Audio = function (_ThreeSixtyViewer) {
   }, {
     key: 'getElement',
     value: function getElement() {
-      this.driver = document.createElement('audio');
-      this.driver.src = this.source;
-      this.driver.loop = this.loop || false;
-      this.driver.muted = this.muted || false;
-      this.driver.setAttribute('crossorigin', 'anonymous');
-      this.driver.autoplay = this.autoplay || true;
-      var video = get(Object.getPrototypeOf(Audio.prototype), 'getElement', this).call(this);
+      var _this2 = this;
+
+      if (this.source && this.source.tagName) {
+        this.driver = this.source;
+      } else {
+        this.driver = document.createElement('audio');
+        this.driver.src = this.source;
+        this.driver.loop = this.loop || false;
+        this.driver.muted = this.muted || false;
+        this.driver.setAttribute('crossorigin', 'anonymous');
+        this.driver.autoplay = this.autoplay || true;
+      }
+      var video = document.createElement('video');
+      video.src = this.driver.src;
+      video.setAttribute('crossorigin', 'anonymous');
+      video.addEventListener('error', function (err) {
+        return _this2.onError(err);
+      });
       video.load();
       return video;
     }
@@ -1964,17 +1979,24 @@ var Audio = function (_ThreeSixtyViewer) {
       return texture;
     }
   }, {
+    key: 'destroy',
+    value: function destroy() {
+      this.driver.style.display = '';
+      get(Object.getPrototypeOf(Audio.prototype), 'destroy', this).call(this);
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.target.appendChild(this.renderer.el);
       this.element.style.display = 'none';
+      this.driver.style.display = 'none';
       var loop = function loop() {
-        _this2.controls.update();
-        _this2.renderer.render(_this2.scene, _this2.camera);
-        if (_this2.element.readyState === 4) {
-          _this2.element.currentTime = _this2.driver.currentTime;
+        _this3.controls.update();
+        _this3.renderer.render(_this3.scene, _this3.camera);
+        if (_this3.element.readyState === 4) {
+          _this3.element.currentTime = _this3.driver.currentTime;
         }
         return requestAnimationFrame(loop);
       };
