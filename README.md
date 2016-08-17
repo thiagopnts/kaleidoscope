@@ -43,7 +43,7 @@ Object.
 </dd>
 </dl>
 
-`options.source` source video to be played.
+`options.source` source video to be played. This can be either a video tag or an url to the video file. Passing a tag is useful when embedding in player or using adaptative streaming.
 
 `options.containerId` is where you want to render the 360, this is going to be retrieved via `document.querySelector` and when you call `render()` the 360 canvas will be append to it.
 
@@ -52,8 +52,6 @@ Object.
 `options.height` height of the 360 canvas. Defaults to `360`.
 
 `options.width` width of the 360 canvas. Defaults to `640`.
-
-`options.video` a video tag element to be used as source and rendered in the 360 canvas.
 
 `options.autoplay` to autoplay the video once rendered. Doesn't work on mobile. Defaults to `true`.
 
@@ -89,7 +87,7 @@ Object.
 </dd>
 </dl>
 
-`options.source` source of the image to be rendered.
+`options.source` source of the image to be rendered. This can be either an url to the image or the img tag itself.
 
 `options.containerId` is where you want to render the 360, this is going to be retrieved via `document.querySelector` and when you call `render()` the 360 canvas will be append to it.
 
