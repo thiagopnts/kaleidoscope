@@ -55,6 +55,7 @@
     "karma": "^1.1.2",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^1.0.1",
+    "karma-firefox-launcher": "^1.0.0",
     "karma-jasmine": "^1.0.2",
     "karma-mocha": "^1.1.1",
     "karma-rollup-plugin": "^0.2.0",
