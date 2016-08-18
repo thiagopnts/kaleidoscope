@@ -5,7 +5,7 @@
   "main": "dist/kaleidoscope.min.js",
   "jsnext:main": "dist/kaleidoscope.es.js",
   "scripts": {
-    "test": "./node_modules/.bin/karma start --browsers Chrome --single-run",
+    "test": "./node_modules/.bin/karma start --single-run",
     "build": "node_modules/.bin/rollup -c && cat dist/kaleidoscope.js | node_modules/.bin/uglifyjs --screw-ie8 -m -c > dist/kaleidoscope.min.js && cat dist/kaleidoscope.iife.js | node_modules/.bin/uglifyjs --screw-ie8 -m -c > dist/kaleidoscope.iife.min.js"
   },
   "files": [
