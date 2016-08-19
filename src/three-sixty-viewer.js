@@ -77,7 +77,7 @@ export default class ThreeSixtyViewer {
   }
 
   onError(err) {
-    console.log('error', err);
+    console.error('error loading', this.source, err);
   }
 
   render() {
