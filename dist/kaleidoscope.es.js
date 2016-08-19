@@ -1560,6 +1560,7 @@ var Controls = function () {
       return _this.onMouseUp();
     };
     this.onDeviceMotion = this.onDeviceMotion.bind(this);
+    this.onMessage = this.onMessage.bind(this);
     this.bindEvents();
   }
 
@@ -1573,7 +1574,8 @@ var Controls = function () {
       this.el.addEventListener('touchstart', this.onTouchStart);
       this.el.addEventListener('touchmove', this.onTouchMove);
       this.el.addEventListener('touchend', this.onTouchEnd);
-      window.addEventListener('devicemotion', this.onDeviceMotion);
+      if (!this.isInIframe()) window.addEventListener('devicemotion', this.onDeviceMotion);
+      window.addEventListener('message', this.onMessage);
     }
   }, {
     key: 'centralize',
@@ -1601,6 +1603,15 @@ var Controls = function () {
       var id = animate();
     }
   }, {
+    key: 'isInIframe',
+    value: function isInIframe() {
+      try {
+        return window.self !== window.top;
+      } catch (e) {
+        return true;
+      }
+    }
+  }, {
     key: 'destroy',
     value: function destroy() {
       this.el.removeEventListener('mouseleave', this.onMouseUp);
@@ -1611,6 +1622,7 @@ var Controls = function () {
       this.el.removeEventListener('touchmove', this.onTouchMove);
       this.el.removeEventListener('touchend', this.onTouchEnd);
       window.removeEventListener('devicemotion', this.onDeviceMotion);
+      window.removeEventListener('message', this.onMessage);
     }
   }, {
     key: 'getCurrentStyle',
@@ -1628,14 +1640,29 @@ var Controls = function () {
       this.el.setAttribute('style', this.getCurrentStyle() + ' cursor: -webkit-grab; cursor: -moz-grab; cursor: grab;');
     }
   }, {
+    key: 'onMessage',
+    value: function onMessage(event) {
+      var _event$data = event.data;
+      var orientation = _event$data.orientation;
+      var portrait = _event$data.portrait;
+      var rotationRate = _event$data.rotationRate;
+
+      this.onDeviceMotion({ orientation: orientation, portrait: portrait, rotationRate: rotationRate });
+    }
+  }, {
     key: 'onDeviceMotion',
     value: function onDeviceMotion(event) {
-      var portrait = event.portrait ? event.portrait : window.matchMedia("(orientation: portrait)").matches;
-      var landscape = event.landscape ? event.landscape : window.matchMedia("(orientation: landscape)").matches;
-      var orientation = event.orientation || window.orientation || -90;
+      var portrait = event.portrait !== undefined ? event.portrait : window.matchMedia("(orientation: portrait)").matches;
+      var orientation = void 0;
+      if (event.orientation !== undefined) {
+        orientation = event.orientation;
+      } else if (window.orientation !== undefined) {
+        orientation = window.orientation;
+      } else {
+        orientation = -90;
+      }
       var alpha = THREE.Math.degToRad(event.rotationRate.alpha);
       var beta = THREE.Math.degToRad(event.rotationRate.beta);
-
       if (portrait) {
         this.phi = this.verticalPanning ? this.phi + alpha * this.velo : this.phi;
         this.theta = this.theta - beta * this.velo * -1;
