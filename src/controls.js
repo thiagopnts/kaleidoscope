@@ -28,6 +28,7 @@ export default class Controls {
     this.onTouchMove = e => this.onMouseMove({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY});
     this.onTouchEnd = _ => this.onMouseUp();
     this.onDeviceMotion = this.onDeviceMotion.bind(this);
+    this.onMessage = this.onMessage.bind(this);
     this.bindEvents();
   }
 
@@ -39,7 +40,9 @@ export default class Controls {
     this.el.addEventListener('touchstart', this.onTouchStart);
     this.el.addEventListener('touchmove', this.onTouchMove);
     this.el.addEventListener('touchend', this.onTouchEnd);
-    window.addEventListener('devicemotion', this.onDeviceMotion);
+    if (!this.isInIframe())
+      window.addEventListener('devicemotion', this.onDeviceMotion);
+    window.addEventListener('message', this.onMessage);
   }
 
   centralize() {
@@ -64,6 +67,14 @@ export default class Controls {
     let id = animate();
   }
 
+  isInIframe() {
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      return true;
+    }
+  }
+
   destroy() {
     this.el.removeEventListener('mouseleave', this.onMouseUp);
     this.el.removeEventListener('mousemove', this.onMouseMove);
@@ -73,6 +84,7 @@ export default class Controls {
     this.el.removeEventListener('touchmove', this.onTouchMove);
     this.el.removeEventListener('touchend', this.onTouchEnd);
     window.removeEventListener('devicemotion', this.onDeviceMotion);
+    window.removeEventListener('message', this.onMessage);
   }
 
   getCurrentStyle() {
@@ -87,13 +99,23 @@ export default class Controls {
     this.el.setAttribute('style', `${this.getCurrentStyle()} cursor: -webkit-grab; cursor: -moz-grab; cursor: grab;`);
   }
 
+  onMessage(event) {
+    let {orientation, portrait, rotationRate} = event.data;
+    this.onDeviceMotion({orientation, portrait, rotationRate});
+  }
+
   onDeviceMotion(event) {
-    let portrait = event.portrait ? event.portrait : window.matchMedia("(orientation: portrait)").matches;
-    let landscape = event.landscape ? event.landscape : window.matchMedia("(orientation: landscape)").matches;
-    let orientation = event.orientation || window.orientation || -90;
+    let portrait = event.portrait !== undefined  ? event.portrait : window.matchMedia("(orientation: portrait)").matches;
+    let orientation;
+    if (event.orientation !== undefined) {
+      orientation = event.orientation;
+    } else if (window.orientation !== undefined) {
+      orientation = window.orientation;
+    } else {
+      orientation = -90;
+    }
     let alpha = THREE.Math.degToRad(event.rotationRate.alpha);
     let beta = THREE.Math.degToRad(event.rotationRate.beta);
-
     if (portrait) {
       this.phi = this.verticalPanning ? this.phi + alpha * this.velo : this.phi;
       this.theta = this.theta - beta * this.velo * -1;
@@ -101,7 +123,7 @@ export default class Controls {
       if (this.verticalPanning) {
         this.phi = orientation === -90 ? this.phi + beta * this.velo : this.phi - beta * this.velo;
       }
-      this.theta = orientation === -90 ? this.theta - alpha * this.velo: this.theta + alpha * this.velo;
+      this.theta = orientation === -90 ? this.theta - alpha * this.velo : this.theta + alpha * this.velo;
     }
 
     this.adjustPhi();
