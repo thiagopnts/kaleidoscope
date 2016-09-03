@@ -65,6 +65,10 @@ Object.
 
 `options.verticalPanning` disables vertical panning. Defaults to `false`.
 
+`options.onDragStart` callback called when user interaction starts.
+
+`options.onDragStop` callback called when user interaction ends.
+
 `viewer.render()` renders the canvas in the defined `containerId` or `container`.
 
 `viewer.play()` starts the current video. Useful for mobile.
@@ -98,6 +102,12 @@ Object.
 `options.width` width of the 360 canvas. Defaults to `640`.
 
 `options.initialYaw` number to define initial yaw of 360, should be in degrees(45, 90, 180 etc).
+
+`options.verticalPanning` disables vertical panning. Defaults to `false`.
+
+`options.onDragStart` callback called when user interaction starts.
+
+`options.onDragStop` callback called when user interaction ends.
 
 `options.onError` callback to when something goes wrong.
 
