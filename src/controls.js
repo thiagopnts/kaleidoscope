@@ -153,6 +153,7 @@ export default class Controls {
     this.rotateStart.set(event.clientX, event.clientY);
     this.isUserInteracting = true;
     this.momentum = false;
+    this.onDragStart && this.onDragStart();
   }
 
   inertia() {
@@ -165,6 +166,7 @@ export default class Controls {
   }
 
   onMouseUp() {
+    this.isUserInteracting && this.onDragStop && this.onDragStop();
     this.addDraggableStyle();
     this.isUserInteracting = false;
     this.momentum = true;
