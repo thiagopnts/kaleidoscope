@@ -173,9 +173,14 @@ export default class Controls {
   }
 
   update() {
-    this.inertia();
+    if ((this.phi === this.previousPhi) && (this.theta === this.previousTheta))
+      return false;
+    this.previousPhi = this.phi;
+    this.previousTheta = this.theta;
     this.euler.set(this.phi, this.theta, 0, 'YXZ');
     this.orientation.setFromEuler(this.euler);
     this.camera.quaternion.copy(this.orientation);
+    this.inertia();
+    return true;
   }
 }

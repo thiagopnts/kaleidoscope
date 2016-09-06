@@ -22,14 +22,21 @@ export default class Renderer {
   }
 
   createMesh() {
-    let material = new THREE.MeshBasicMaterial({map: this.texture});
-    let geometry = new THREE.SphereGeometry(1, 50, 50);
-    geometry.scale(-1, 1, 1);
-    let mesh = new THREE.Mesh(geometry, material);
+    this.material = new THREE.MeshBasicMaterial({map: this.texture});
+    this.geometry = new THREE.SphereGeometry(1, 50, 50);
+    this.geometry.scale(-1, 1, 1);
+    let mesh = new THREE.Mesh(this.geometry, this.material);
     return mesh;
   }
 
-  render(scene, camera) {
+  destroy() {
+    this.geometry.dispose();
+    this.material.dispose();
+    this.renderer.dispose();
+  }
+
+  render(scene, camera, needsUpdate) {
+    if (!needsUpdate) return;
     this.renderer.render(scene, camera);
   }
 }

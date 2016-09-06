@@ -27,9 +27,16 @@ export default class ThreeSixtyViewer {
         onDragStart,
         onDragStop,
     });
+    this.update = this.update.bind(this);
+    this.stop = this.stop.bind(this);
+    this.onError = this.onError.bind(this);
+    this.needsUpdate = false;
     this.scene = this.createScene();
     this.scene.add(this.camera);
     this.element = this.getElement();
+    this.element.addEventListener('timeupdate', this.update);
+    this.element.addEventListener('pause', this.stop);
+    this.element.addEventListener('ended', this.stop);
     this.texture = this.createTexture();
     this.renderer.setTexture(this.texture);
     this.scene.getObjectByName('photo').children = [this.renderer.mesh];
@@ -48,12 +55,21 @@ export default class ThreeSixtyViewer {
     this.controls.centralize();
   }
 
+  update() {
+    this.needsUpdate = true;
+  }
+
+  stop() {
+    this.needsUpdate = false;
+  }
+
   destroy() {
     this.element.style.display = '';
     cancelAnimationFrame(this.animationFrameId);
+    this.element.pause && this.element.pause();
     this.target.removeChild(this.renderer.el);
     this.controls.destroy();
-    this.element.pause && this.element.pause();
+    this.renderer.destroy();
   }
 
   setSize(size) {
@@ -70,7 +86,7 @@ export default class ThreeSixtyViewer {
     video.setAttribute('crossorigin', 'anonymous');
     video.setAttribute('webkit-playsinline', '');
     video.autoplay = this.autoplay !== undefined ? this.autoplay : true;
-    video.addEventListener('error', (err) => this.onError(err));
+    video.addEventListener('error', this.onError);
     return video;
   }
 
@@ -101,8 +117,8 @@ export default class ThreeSixtyViewer {
     this.element.style.display = 'none';
 
     let loop = () => {
-      this.controls.update();
-      this.renderer.render(this.scene, this.camera);
+      let cameraUpdated = this.controls.update();
+      this.renderer.render(this.scene, this.camera, this.needsUpdate || cameraUpdated);
       this.animationFrameId = requestAnimationFrame(loop);
     };
 

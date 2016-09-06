@@ -28,7 +28,7 @@ export default class Audio extends ThreeSixtyViewer {
     let video = document.createElement('video');
     video.src = this.driver.src;
     video.setAttribute('crossorigin', 'anonymous');
-    video.addEventListener('error', (err) => this.onError(err));
+    video.addEventListener('error', this.onError);
     video.load();
     return video;
   }
@@ -54,8 +54,8 @@ export default class Audio extends ThreeSixtyViewer {
     this.element.style.display = 'none';
     this.driver.style.display = 'none';
     let loop = () => {
-      this.controls.update();
-      this.renderer.render(this.scene, this.camera);
+      let cameraUpdated = this.controls.update();
+      this.renderer.render(this.scene, this.camera, this.needsUpdate || cameraUpdated);
       if (this.element.readyState === 4) {
         this.element.currentTime = this.driver.currentTime;
       }
