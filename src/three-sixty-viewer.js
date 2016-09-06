@@ -80,11 +80,12 @@ export default class ThreeSixtyViewer {
     if (this.source && this.source.tagName)
       return this.source;
     let video = document.createElement('video');
-    video.src = this.source;
     video.loop = this.loop || false;
     video.muted = this.muted || false;
     video.setAttribute('crossorigin', 'anonymous');
-    video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('webkit-playsinline', 'true');
+    video.setAttribute('playsinline', 'true');
+    video.setAttribute('src', this.source);
     video.autoplay = this.autoplay !== undefined ? this.autoplay : true;
     video.addEventListener('error', this.onError);
     return video;
