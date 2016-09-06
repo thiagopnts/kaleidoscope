@@ -103,10 +103,10 @@ export default class ThreeSixtyViewer {
     let loop = () => {
       this.controls.update();
       this.renderer.render(this.scene, this.camera);
-      return requestAnimationFrame(loop);
+      this.animationFrameId = requestAnimationFrame(loop);
     };
 
-    this.animationFrameId = loop();
+    loop();
   }
 }
 

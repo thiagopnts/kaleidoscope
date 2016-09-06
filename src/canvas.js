@@ -36,8 +36,8 @@ export default class Canvas extends ThreeSixtyViewer {
       this.controls.update();
       this.renderer.render(this.scene, this.camera);
       this.renderer.mesh.material.map.needsUpdate = true
-      return requestAnimationFrame(loop);
+      this.animationFrameId = requestAnimationFrame(loop);
     };
-    this.animationFrameId = loop();
+    loop();
   }
 }

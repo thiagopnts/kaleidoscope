@@ -59,8 +59,8 @@ export default class Audio extends ThreeSixtyViewer {
       if (this.element.readyState === 4) {
         this.element.currentTime = this.driver.currentTime;
       }
-      return requestAnimationFrame(loop);
+      this.animationFrameId = requestAnimationFrame(loop);
     };
-    this.animationFrameId = loop();
+    loop();
   }
 }
