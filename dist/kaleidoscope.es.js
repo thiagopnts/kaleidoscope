@@ -1508,15 +1508,23 @@ var Renderer = function () {
   }, {
     key: 'createMesh',
     value: function createMesh() {
-      var material = new THREE.MeshBasicMaterial({ map: this.texture });
-      var geometry = new THREE.SphereGeometry(1, 50, 50);
-      geometry.scale(-1, 1, 1);
-      var mesh = new THREE.Mesh(geometry, material);
+      this.material = new THREE.MeshBasicMaterial({ map: this.texture });
+      this.geometry = new THREE.SphereGeometry(1, 50, 50);
+      this.geometry.scale(-1, 1, 1);
+      var mesh = new THREE.Mesh(this.geometry, this.material);
       return mesh;
     }
   }, {
+    key: 'destroy',
+    value: function destroy() {
+      this.geometry.dispose();
+      this.material.dispose();
+      this.renderer.dispose();
+    }
+  }, {
     key: 'render',
-    value: function render(scene, camera) {
+    value: function render(scene, camera, needsUpdate) {
+      if (!needsUpdate) return;
       this.renderer.render(scene, camera);
     }
   }]);
@@ -1703,6 +1711,7 @@ var Controls = function () {
       this.rotateStart.set(event.clientX, event.clientY);
       this.isUserInteracting = true;
       this.momentum = false;
+      this.onDragStart && this.onDragStart();
     }
   }, {
     key: 'inertia',
@@ -1717,6 +1726,7 @@ var Controls = function () {
   }, {
     key: 'onMouseUp',
     value: function onMouseUp() {
+      this.isUserInteracting && this.onDragStop && this.onDragStop();
       this.addDraggableStyle();
       this.isUserInteracting = false;
       this.momentum = true;
@@ -1724,10 +1734,14 @@ var Controls = function () {
   }, {
     key: 'update',
     value: function update() {
-      this.inertia();
+      if (this.phi === this.previousPhi && this.theta === this.previousTheta) return false;
+      this.previousPhi = this.phi;
+      this.previousTheta = this.theta;
       this.euler.set(this.phi, this.theta, 0, 'YXZ');
       this.orientation.setFromEuler(this.euler);
       this.camera.quaternion.copy(this.orientation);
+      this.inertia();
+      return true;
     }
   }]);
   return Controls;
@@ -1745,13 +1759,29 @@ var ThreeSixtyViewer = function () {
     var containerId = this.containerId;
     var initialYaw = this.initialYaw;
     var verticalPanning = this.verticalPanning;
+    var onDragStart = this.onDragStart;
+    var onDragStop = this.onDragStop;
 
     this.renderer = new Renderer({ height: height, width: width });
     this.camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
-    this.controls = new Controls({ camera: this.camera, renderer: this.renderer, initialYaw: initialYaw, verticalPanning: verticalPanning });
+    this.controls = new Controls({
+      camera: this.camera,
+      renderer: this.renderer,
+      initialYaw: initialYaw,
+      verticalPanning: verticalPanning,
+      onDragStart: onDragStart,
+      onDragStop: onDragStop
+    });
+    this.update = this.update.bind(this);
+    this.stop = this.stop.bind(this);
+    this.onError = this.onError.bind(this);
+    this.needsUpdate = false;
     this.scene = this.createScene();
     this.scene.add(this.camera);
     this.element = this.getElement();
+    this.element.addEventListener('timeupdate', this.update);
+    this.element.addEventListener('pause', this.stop);
+    this.element.addEventListener('ended', this.stop);
     this.texture = this.createTexture();
     this.renderer.setTexture(this.texture);
     this.scene.getObjectByName('photo').children = [this.renderer.mesh];
@@ -1774,13 +1804,24 @@ var ThreeSixtyViewer = function () {
       this.controls.centralize();
     }
   }, {
+    key: 'update',
+    value: function update() {
+      this.needsUpdate = true;
+    }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      this.needsUpdate = false;
+    }
+  }, {
     key: 'destroy',
     value: function destroy() {
       this.element.style.display = '';
       cancelAnimationFrame(this.animationFrameId);
+      this.element.pause && this.element.pause();
       this.target.removeChild(this.renderer.el);
       this.controls.destroy();
-      this.element.pause && this.element.pause();
+      this.renderer.destroy();
     }
   }, {
     key: 'setSize',
@@ -1790,19 +1831,16 @@ var ThreeSixtyViewer = function () {
   }, {
     key: 'getElement',
     value: function getElement() {
-      var _this = this;
-
       if (this.source && this.source.tagName) return this.source;
       var video = document.createElement('video');
-      video.src = this.source;
       video.loop = this.loop || false;
       video.muted = this.muted || false;
       video.setAttribute('crossorigin', 'anonymous');
-      video.setAttribute('webkit-playsinline', '');
+      video.setAttribute('webkit-playsinline', 'true');
+      video.setAttribute('playsinline', 'true');
+      video.setAttribute('src', this.source);
       video.autoplay = this.autoplay !== undefined ? this.autoplay : true;
-      video.addEventListener('error', function (err) {
-        return _this.onError(err);
-      });
+      video.addEventListener('error', this.onError);
       return video;
     }
   }, {
@@ -1831,18 +1869,18 @@ var ThreeSixtyViewer = function () {
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this = this;
 
       this.target.appendChild(this.renderer.el);
       this.element.style.display = 'none';
 
       var loop = function loop() {
-        _this2.controls.update();
-        _this2.renderer.render(_this2.scene, _this2.camera);
-        return requestAnimationFrame(loop);
+        var cameraUpdated = _this.controls.update();
+        _this.renderer.render(_this.scene, _this.camera, _this.needsUpdate || cameraUpdated);
+        _this.animationFrameId = requestAnimationFrame(loop);
       };
 
-      this.animationFrameId = loop();
+      loop();
     }
   }]);
   return ThreeSixtyViewer;
@@ -1940,12 +1978,12 @@ var Canvas = function (_ThreeSixtyViewer) {
       var loop = function loop() {
         _this2.context.clearRect(0, 0, _this2.width, _this2.height);
         _this2.context.drawImage(_this2.video, 0, 0, _this2.width, _this2.height);
-        _this2.controls.update();
-        _this2.renderer.render(_this2.scene, _this2.camera);
+        var cameraUpdated = _this2.controls.update();
+        _this2.renderer.render(_this2.scene, _this2.camera, _this2.needsUpdate || cameraUpdated);
         _this2.renderer.mesh.material.map.needsUpdate = true;
-        return requestAnimationFrame(loop);
+        _this2.animationFrameId = requestAnimationFrame(loop);
       };
-      this.animationFrameId = loop();
+      loop();
     }
   }]);
   return Canvas;
@@ -1972,8 +2010,6 @@ var Audio = function (_ThreeSixtyViewer) {
   }, {
     key: 'getElement',
     value: function getElement() {
-      var _this2 = this;
-
       if (this.source && this.source.tagName) {
         this.driver = this.source;
       } else {
@@ -1987,9 +2023,7 @@ var Audio = function (_ThreeSixtyViewer) {
       var video = document.createElement('video');
       video.src = this.driver.src;
       video.setAttribute('crossorigin', 'anonymous');
-      video.addEventListener('error', function (err) {
-        return _this2.onError(err);
-      });
+      video.addEventListener('error', this.onError);
       video.load();
       return video;
     }
@@ -2014,20 +2048,20 @@ var Audio = function (_ThreeSixtyViewer) {
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this2 = this;
 
       this.target.appendChild(this.renderer.el);
       this.element.style.display = 'none';
       this.driver.style.display = 'none';
       var loop = function loop() {
-        _this3.controls.update();
-        _this3.renderer.render(_this3.scene, _this3.camera);
-        if (_this3.element.readyState === 4) {
-          _this3.element.currentTime = _this3.driver.currentTime;
+        var cameraUpdated = _this2.controls.update();
+        _this2.renderer.render(_this2.scene, _this2.camera, _this2.needsUpdate || cameraUpdated);
+        if (_this2.element.readyState === 4) {
+          _this2.element.currentTime = _this2.driver.currentTime;
         }
-        return requestAnimationFrame(loop);
+        _this2.animationFrameId = requestAnimationFrame(loop);
       };
-      this.animationFrameId = loop();
+      loop();
     }
   }]);
   return Audio;
