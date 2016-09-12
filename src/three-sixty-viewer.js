@@ -18,7 +18,7 @@ export default class ThreeSixtyViewer {
         onDragStop,
     } = this;
     this.renderer = new Renderer({height, width});
-    this.camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
+    this.camera = new THREE.PerspectiveCamera(80, this.width / this.height, 0.1, 100);
     this.controls = new Controls({
         camera: this.camera,
         renderer: this.renderer,
