@@ -1763,7 +1763,7 @@ var ThreeSixtyViewer = function () {
     var onDragStop = this.onDragStop;
 
     this.renderer = new Renderer({ height: height, width: width });
-    this.camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
+    this.camera = new THREE.PerspectiveCamera(80, this.width / this.height, 0.1, 100);
     this.controls = new Controls({
       camera: this.camera,
       renderer: this.renderer,
@@ -1773,15 +1773,16 @@ var ThreeSixtyViewer = function () {
       onDragStop: onDragStop
     });
     this.update = this.update.bind(this);
-    this.stop = this.stop.bind(this);
+    this.stopVideoLoop = this.stopVideoLoop.bind(this);
     this.onError = this.onError.bind(this);
+    this.startVideoLoop = this.startVideoLoop.bind(this);
     this.needsUpdate = false;
     this.scene = this.createScene();
     this.scene.add(this.camera);
     this.element = this.getElement();
-    this.element.addEventListener('timeupdate', this.update);
-    this.element.addEventListener('pause', this.stop);
-    this.element.addEventListener('ended', this.stop);
+    this.element.addEventListener('playing', this.startVideoLoop);
+    this.element.addEventListener('pause', this.stopVideoLoop);
+    this.element.addEventListener('ended', this.stopVideoLoop);
     this.texture = this.createTexture();
     this.renderer.setTexture(this.texture);
     this.scene.getObjectByName('photo').children = [this.renderer.mesh];
@@ -1809,14 +1810,16 @@ var ThreeSixtyViewer = function () {
       this.needsUpdate = true;
     }
   }, {
-    key: 'stop',
-    value: function stop() {
+    key: 'stopVideoLoop',
+    value: function stopVideoLoop() {
+      clearTimeout(this.videoLoopId);
       this.needsUpdate = false;
     }
   }, {
     key: 'destroy',
     value: function destroy() {
       this.element.style.display = '';
+      clearTimeout(this.videoLoopId);
       cancelAnimationFrame(this.animationFrameId);
       this.element.pause && this.element.pause();
       this.target.removeChild(this.renderer.el);
@@ -1867,19 +1870,34 @@ var ThreeSixtyViewer = function () {
     key: 'onError',
     value: function onError(err) {}
   }, {
+    key: 'startVideoLoop',
+    value: function startVideoLoop() {
+      var _this = this;
+
+      var videoFps = 1000 / 25;
+      var videoLoop = function videoLoop() {
+        _this.needsUpdate = true;
+        _this.videoLoopId = setTimeout(videoLoop, videoFps);
+      };
+
+      videoLoop();
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _this = this;
+      var _this2 = this;
 
       this.target.appendChild(this.renderer.el);
       this.element.style.display = 'none';
 
       var loop = function loop() {
-        var cameraUpdated = _this.controls.update();
-        _this.renderer.render(_this.scene, _this.camera, _this.needsUpdate || cameraUpdated);
-        _this.animationFrameId = requestAnimationFrame(loop);
+        _this2.animationFrameId = requestAnimationFrame(loop);
+        var cameraUpdated = _this2.controls.update();
+        _this2.renderer.render(_this2.scene, _this2.camera, _this2.needsUpdate || cameraUpdated);
+        _this2.needsUpdate = false;
       };
 
+      this.startVideoLoop();
       loop();
     }
   }]);
@@ -1963,6 +1981,9 @@ var Canvas = function (_ThreeSixtyViewer) {
     key: 'getElement',
     value: function getElement() {
       this.video = get(Object.getPrototypeOf(Canvas.prototype), 'getElement', this).call(this);
+      this.video.addEventListener('playing', this.startVideoLoop);
+      this.video.addEventListener('pause', this.stopVideoLoop);
+      this.video.addEventListener('ended', this.stopVideoLoop);
       var canvas = document.createElement('canvas');
       canvas.height = this.height;
       canvas.width = this.width;
@@ -1976,12 +1997,13 @@ var Canvas = function (_ThreeSixtyViewer) {
       this.target.appendChild(this.renderer.el);
       this.video.style.display = 'none';
       var loop = function loop() {
+        _this2.animationFrameId = requestAnimationFrame(loop);
         _this2.context.clearRect(0, 0, _this2.width, _this2.height);
         _this2.context.drawImage(_this2.video, 0, 0, _this2.width, _this2.height);
         var cameraUpdated = _this2.controls.update();
         _this2.renderer.render(_this2.scene, _this2.camera, _this2.needsUpdate || cameraUpdated);
         _this2.renderer.mesh.material.map.needsUpdate = true;
-        _this2.animationFrameId = requestAnimationFrame(loop);
+        _this2.needsUpdate = false;
       };
       loop();
     }
