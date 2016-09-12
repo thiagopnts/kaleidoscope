@@ -76,6 +76,8 @@ export default class ThreeSixtyViewer {
   }
 
   setSize(size) {
+    this.camera.aspect = size.width / size.height;
+    this.camera.updateProjectionMatrix();
     this.renderer.setSize(size);
   }
 
