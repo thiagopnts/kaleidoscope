@@ -28,15 +28,16 @@ export default class ThreeSixtyViewer {
         onDragStop,
     });
     this.update = this.update.bind(this);
-    this.stop = this.stop.bind(this);
+    this.stopVideoLoop = this.stopVideoLoop.bind(this);
     this.onError = this.onError.bind(this);
+    this.startVideoLoop = this.startVideoLoop.bind(this);
     this.needsUpdate = false;
     this.scene = this.createScene();
     this.scene.add(this.camera);
     this.element = this.getElement();
-    this.element.addEventListener('timeupdate', this.update);
-    this.element.addEventListener('pause', this.stop);
-    this.element.addEventListener('ended', this.stop);
+    this.element.addEventListener('playing', this.startVideoLoop);
+    this.element.addEventListener('pause', this.stopVideoLoop);
+    this.element.addEventListener('ended', this.stopVideoLoop);
     this.texture = this.createTexture();
     this.renderer.setTexture(this.texture);
     this.scene.getObjectByName('photo').children = [this.renderer.mesh];
@@ -59,12 +60,14 @@ export default class ThreeSixtyViewer {
     this.needsUpdate = true;
   }
 
-  stop() {
+  stopVideoLoop() {
+    clearTimeout(this.videoLoopId);
     this.needsUpdate = false;
   }
 
   destroy() {
     this.element.style.display = '';
+    clearTimeout(this.videoLoopId);
     cancelAnimationFrame(this.animationFrameId);
     this.element.pause && this.element.pause();
     this.target.removeChild(this.renderer.el);
@@ -113,16 +116,28 @@ export default class ThreeSixtyViewer {
     console.error('error loading', this.source, err);
   }
 
+  startVideoLoop() {
+    let videoFps = 1000 / 25;
+    let videoLoop = () => {
+      this.needsUpdate = true;
+      this.videoLoopId = setTimeout(videoLoop, videoFps);
+    }
+
+    videoLoop();
+  }
+
   render() {
     this.target.appendChild(this.renderer.el);
     this.element.style.display = 'none';
 
     let loop = () => {
+      this.animationFrameId = requestAnimationFrame(loop);
       let cameraUpdated = this.controls.update();
       this.renderer.render(this.scene, this.camera, this.needsUpdate || cameraUpdated);
-      this.animationFrameId = requestAnimationFrame(loop);
+      this.needsUpdate = false;
     };
 
+    this.startVideoLoop();
     loop();
   }
 }
