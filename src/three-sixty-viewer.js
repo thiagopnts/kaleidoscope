@@ -56,10 +56,6 @@ export default class ThreeSixtyViewer {
     this.controls.centralize();
   }
 
-  update() {
-    this.needsUpdate = true;
-  }
-
   stopVideoLoop() {
     clearTimeout(this.videoLoopId);
     this.needsUpdate = false;
