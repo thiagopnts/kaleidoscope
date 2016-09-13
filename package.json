@@ -6,7 +6,8 @@
   "jsnext:main": "dist/kaleidoscope.es.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start --single-run",
-    "build": "node_modules/.bin/rollup -c && cat dist/kaleidoscope.js | node_modules/.bin/uglifyjs --screw-ie8 -m -c > dist/kaleidoscope.min.js && cat dist/kaleidoscope.iife.js | node_modules/.bin/uglifyjs --screw-ie8 -m -c > dist/kaleidoscope.iife.min.js"
+    "build": "node_modules/.bin/rollup -c && cat dist/kaleidoscope.js | node_modules/.bin/uglifyjs --screw-ie8 -m -c > dist/kaleidoscope.min.js && cat dist/kaleidoscope.iife.js | node_modules/.bin/uglifyjs --screw-ie8 -m -c > dist/kaleidoscope.iife.min.js",
+    "build-closure": "node_modules/.bin/rollup -c && java -jar utils/build/compiler/closure-compiler-v20160713.jar --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs utils/build/externs.js --language_in=ECMASCRIPT5_STRICT --js dist/kaleidoscope.js --js_output_file dist/kaleidoscope.min.js"
   },
   "files": [
     "package.json",
@@ -68,6 +69,7 @@
     "rollup-plugin-strip": "^1.1.1",
     "rollup-plugin-uglify": "^1.0.1",
     "sinon": "^1.17.3",
+    "three": "^0.80.1",
     "uglify-js": "^2.6.4"
   },
   "dependencies": {
