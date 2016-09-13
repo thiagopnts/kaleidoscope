@@ -42,6 +42,7 @@ export default class Canvas extends ThreeSixtyViewer {
       this.renderer.mesh.material.map.needsUpdate = true
       this.needsUpdate = false;
     };
+    this.startVideoLoop();
     loop();
   }
 }
