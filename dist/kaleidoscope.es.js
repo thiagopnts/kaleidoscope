@@ -1772,7 +1772,6 @@ var ThreeSixtyViewer = function () {
       onDragStart: onDragStart,
       onDragStop: onDragStop
     });
-    this.update = this.update.bind(this);
     this.stopVideoLoop = this.stopVideoLoop.bind(this);
     this.onError = this.onError.bind(this);
     this.startVideoLoop = this.startVideoLoop.bind(this);
@@ -1805,11 +1804,6 @@ var ThreeSixtyViewer = function () {
       this.controls.centralize();
     }
   }, {
-    key: 'update',
-    value: function update() {
-      this.needsUpdate = true;
-    }
-  }, {
     key: 'stopVideoLoop',
     value: function stopVideoLoop() {
       clearTimeout(this.videoLoopId);
@@ -1829,6 +1823,8 @@ var ThreeSixtyViewer = function () {
   }, {
     key: 'setSize',
     value: function setSize(size) {
+      this.camera.aspect = size.width / size.height;
+      this.camera.updateProjectionMatrix();
       this.renderer.setSize(size);
     }
   }, {
@@ -2005,6 +2001,7 @@ var Canvas = function (_ThreeSixtyViewer) {
         _this2.renderer.mesh.material.map.needsUpdate = true;
         _this2.needsUpdate = false;
       };
+      this.startVideoLoop();
       loop();
     }
   }]);
