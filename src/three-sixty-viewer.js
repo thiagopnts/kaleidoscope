@@ -27,7 +27,6 @@ export default class ThreeSixtyViewer {
         onDragStart,
         onDragStop,
     });
-    this.update = this.update.bind(this);
     this.stopVideoLoop = this.stopVideoLoop.bind(this);
     this.onError = this.onError.bind(this);
     this.startVideoLoop = this.startVideoLoop.bind(this);
