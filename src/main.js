@@ -6,9 +6,9 @@ import Canvas from './canvas'
 import Audio from './audio'
 
 let video = (options) => {
-  if (utils.isiPhone())
+  if (utils.shouldUseAudioDriver())
       return new Audio(options);
-  if (utils.isIE())
+  if (utils.shouldUseCanvasInBetween())
       return new Canvas(options);
   return new Video(options);
 }
