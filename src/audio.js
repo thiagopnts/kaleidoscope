@@ -56,6 +56,7 @@ export default class Audio extends ThreeSixtyViewer {
     let loop = () => {
       let cameraUpdated = this.controls.update();
       this.renderer.render(this.scene, this.camera, this.needsUpdate || cameraUpdated);
+      this.needsUpdate = false;
       if (this.element.readyState === 4) {
         this.element.currentTime = this.driver.currentTime;
       }
