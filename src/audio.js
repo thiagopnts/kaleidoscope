@@ -61,6 +61,7 @@ export default class Audio extends ThreeSixtyViewer {
       }
       this.animationFrameId = requestAnimationFrame(loop);
     };
+    this.startVideoLoop();
     loop();
   }
 }
