@@ -3,12 +3,13 @@ var utils = {
     return (/(ipad|iphone|ipod)/ig.test(navigator.userAgent)
     );
   },
-  isiPhone: function isiPhone() {
-    return (/iphone.*(7|8|9)_[0-9]/i.test(navigator.userAgent)
-    );
+  shouldUseAudioDriver: function shouldUseAudioDriver() {
+    var isOldiOS = /iphone.*(7|8|9)_[0-9]/i.test(navigator.userAgent);
+    var isWebView = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent);
+    return isOldiOS || isWebView;
   },
-  isIE: function isIE() {
-    return (/Trident|Edge/i.test(navigator.userAgent)
+  shouldUseCanvasInBetween: function shouldUseCanvasInBetween() {
+    return (/trident|edge/i.test(navigator.userAgent)
     );
   }
 };
@@ -2080,6 +2081,7 @@ var Audio = function (_ThreeSixtyViewer) {
         }
         _this2.animationFrameId = requestAnimationFrame(loop);
       };
+      this.startVideoLoop();
       loop();
     }
   }]);
@@ -2087,8 +2089,12 @@ var Audio = function (_ThreeSixtyViewer) {
 }(ThreeSixtyViewer);
 
 var video = function video(options) {
-  if (utils.isiPhone()) return new Audio(options);
-  if (utils.isIE()) return new Canvas(options);
+  if (utils.shouldUseAudioDriver()) {
+    return new Audio(options);
+  }
+  if (utils.shouldUseCanvasInBetween()) {
+    return new Canvas(options);
+  }
   return new Video(options);
 };
 
