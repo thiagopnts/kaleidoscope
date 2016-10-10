@@ -1,223 +1,3 @@
-function interopDefault(ex) {
-	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
-}
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var index$1 = createCommonjsModule(function (module) {
-	'use strict';
-
-	module.exports = function (str) {
-		return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
-			return '%' + c.charCodeAt(0).toString(16).toUpperCase();
-		});
-	};
-});
-
-var index$2 = interopDefault(index$1);
-
-var require$$1 = Object.freeze({
-	default: index$2
-});
-
-var index$3 = createCommonjsModule(function (module) {
-	'use strict';
-	/* eslint-disable no-unused-vars */
-
-	var hasOwnProperty = Object.prototype.hasOwnProperty;
-	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-	function toObject(val) {
-		if (val === null || val === undefined) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-
-		return Object(val);
-	}
-
-	function shouldUseNative() {
-		try {
-			if (!Object.assign) {
-				return false;
-			}
-
-			// Detect buggy property enumeration order in older V8 versions.
-
-			// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-			var test1 = new String('abc'); // eslint-disable-line
-			test1[5] = 'de';
-			if (Object.getOwnPropertyNames(test1)[0] === '5') {
-				return false;
-			}
-
-			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-			var test2 = {};
-			for (var i = 0; i < 10; i++) {
-				test2['_' + String.fromCharCode(i)] = i;
-			}
-			var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-				return test2[n];
-			});
-			if (order2.join('') !== '0123456789') {
-				return false;
-			}
-
-			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-			var test3 = {};
-			'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-				test3[letter] = letter;
-			});
-			if (Object.keys(Object.assign({}, test3)).join('') !== 'abcdefghijklmnopqrst') {
-				return false;
-			}
-
-			return true;
-		} catch (e) {
-			// We don't expect any of the above to throw, but better to be safe.
-			return false;
-		}
-	}
-
-	module.exports = shouldUseNative() ? Object.assign : function (target, source) {
-		var from;
-		var to = toObject(target);
-		var symbols;
-
-		for (var s = 1; s < arguments.length; s++) {
-			from = Object(arguments[s]);
-
-			for (var key in from) {
-				if (hasOwnProperty.call(from, key)) {
-					to[key] = from[key];
-				}
-			}
-
-			if (Object.getOwnPropertySymbols) {
-				symbols = Object.getOwnPropertySymbols(from);
-				for (var i = 0; i < symbols.length; i++) {
-					if (propIsEnumerable.call(from, symbols[i])) {
-						to[symbols[i]] = from[symbols[i]];
-					}
-				}
-			}
-		}
-
-		return to;
-	};
-});
-
-var index$4 = interopDefault(index$3);
-
-var require$$0 = Object.freeze({
-	default: index$4
-});
-
-var index = createCommonjsModule(function (module, exports) {
-	'use strict';
-
-	var strictUriEncode = interopDefault(require$$1);
-	var objectAssign = interopDefault(require$$0);
-
-	function encode(value, opts) {
-		if (opts.encode) {
-			return opts.strict ? strictUriEncode(value) : encodeURIComponent(value);
-		}
-
-		return value;
-	}
-
-	exports.extract = function (str) {
-		return str.split('?')[1] || '';
-	};
-
-	exports.parse = function (str) {
-		// Create an object with no prototype
-		// https://github.com/sindresorhus/query-string/issues/47
-		var ret = Object.create(null);
-
-		if (typeof str !== 'string') {
-			return ret;
-		}
-
-		str = str.trim().replace(/^(\?|#|&)/, '');
-
-		if (!str) {
-			return ret;
-		}
-
-		str.split('&').forEach(function (param) {
-			var parts = param.replace(/\+/g, ' ').split('=');
-			// Firefox (pre 40) decodes `%3D` to `=`
-			// https://github.com/sindresorhus/query-string/pull/37
-			var key = parts.shift();
-			var val = parts.length > 0 ? parts.join('=') : undefined;
-
-			key = decodeURIComponent(key);
-
-			// missing `=` should be `null`:
-			// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
-			val = val === undefined ? null : decodeURIComponent(val);
-
-			if (ret[key] === undefined) {
-				ret[key] = val;
-			} else if (Array.isArray(ret[key])) {
-				ret[key].push(val);
-			} else {
-				ret[key] = [ret[key], val];
-			}
-		});
-
-		return ret;
-	};
-
-	exports.stringify = function (obj, opts) {
-		var defaults = {
-			encode: true,
-			strict: true
-		};
-
-		opts = objectAssign(defaults, opts);
-
-		return obj ? Object.keys(obj).sort().map(function (key) {
-			var val = obj[key];
-
-			if (val === undefined) {
-				return '';
-			}
-
-			if (val === null) {
-				return encode(key, opts);
-			}
-
-			if (Array.isArray(val)) {
-				var result = [];
-
-				val.slice().forEach(function (val2) {
-					if (val2 === undefined) {
-						return;
-					}
-
-					if (val2 === null) {
-						result.push(encode(key, opts));
-					} else {
-						result.push(encode(key, opts) + '=' + encode(val2, opts));
-					}
-				});
-
-				return result.join('&');
-			}
-
-			return encode(key, opts) + '=' + encode(val, opts);
-		}).filter(function (x) {
-			return x.length > 0;
-		}).join('&') : '';
-	};
-});
-
-var queryString = interopDefault(index);
-
 var utils = {
   isiOS: function isiOS() {
     return (/(ipad|iphone|ipod)/ig.test(navigator.userAgent)
@@ -234,7 +14,15 @@ var utils = {
   }
 };
 
-var index$5=createCommonjsModule(function(module){// File:src/Three.js
+function interopDefault(ex) {
+	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
+}
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var index=createCommonjsModule(function(module){// File:src/Three.js
 /**
  * @author mrdoob / http://mrdoob.com/
  */var THREE={REVISION:'75'};//
@@ -1618,7 +1406,7 @@ var maxBones=allocateBones(object);var precision=renderer.getPrecision();if(mate
 for(var p=0,pl=programs.length;p<pl;p++){var programInfo=programs[p];if(programInfo.code===code){program=programInfo;++program.usedTimes;break;}}if(program===undefined){program=new THREE.WebGLProgram(renderer,code,material,parameters);programs.push(program);}return program;};this.releaseProgram=function(program){if(--program.usedTimes===0){// Remove from unordered set
 var i=programs.indexOf(program);programs[i]=programs[programs.length-1];programs.pop();// Free WebGL resources
 program.destroy();}};// Exposed for resource monitoring & error feedback via renderer.info:
-this.programs=programs;};});var THREE = interopDefault(index$5);
+this.programs=programs;};});var THREE = interopDefault(index);
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -2301,18 +2089,13 @@ var Audio = function (_ThreeSixtyViewer) {
   return Audio;
 }(ThreeSixtyViewer);
 
-var values = queryString.parse(location.search);
-
 var video = function video(options) {
-  if (!values.video && values.audio || utils.shouldUseAudioDriver()) {
-    document.getElementById('info').innerText = 'audio driver';
+  if (utils.shouldUseAudioDriver()) {
     return new Audio(options);
   }
-  if (values.canvas || utils.shouldUseCanvasInBetween()) {
-    document.getElementById('info').innerText = 'canvas in between';
+  if (utils.shouldUseCanvasInBetween()) {
     return new Canvas(options);
   }
-  document.getElementById('info').innerText = 'video';
   return new Video(options);
 };
 
