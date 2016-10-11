@@ -1769,7 +1769,7 @@ var Controls = function () {
       var portrait = _event$data.portrait;
       var rotationRate = _event$data.rotationRate;
 
-      if (!orientation || !portrait || !rotationRate) return;
+      if (!rotationRate) return;
       this.onDeviceMotion({ orientation: orientation, portrait: portrait, rotationRate: rotationRate });
     }
   }, {
