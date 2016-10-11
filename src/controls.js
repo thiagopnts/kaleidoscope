@@ -101,7 +101,7 @@ export default class Controls {
 
   onMessage(event) {
     let {orientation, portrait, rotationRate} = event.data;
-    if (!orientation || !portrait || !rotationRate) return;
+    if (!rotationRate) return;
     this.onDeviceMotion({orientation, portrait, rotationRate});
   }
 
