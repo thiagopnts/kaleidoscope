@@ -1408,6 +1408,119 @@ var i=programs.indexOf(program);programs[i]=programs[programs.length-1];programs
 program.destroy();}};// Exposed for resource monitoring & error feedback via renderer.info:
 this.programs=programs;};});var THREE = interopDefault(index);
 
+var asyncGenerator = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
+
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
+
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -1656,6 +1769,7 @@ var Controls = function () {
       var portrait = _event$data.portrait;
       var rotationRate = _event$data.rotationRate;
 
+      if (!orientation || !portrait || !rotationRate) return;
       this.onDeviceMotion({ orientation: orientation, portrait: portrait, rotationRate: rotationRate });
     }
   }, {
@@ -1750,7 +1864,7 @@ var Controls = function () {
 
 var ThreeSixtyViewer = function () {
   function ThreeSixtyViewer() {
-    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     classCallCheck(this, ThreeSixtyViewer);
 
     Object.assign(this, { height: 360, width: 640, initialYaw: 90, verticalPanning: true }, options);
@@ -1906,7 +2020,7 @@ var Video = function (_ThreeSixtyViewer) {
 
   function Video(options) {
     classCallCheck(this, Video);
-    return possibleConstructorReturn(this, Object.getPrototypeOf(Video).call(this, options));
+    return possibleConstructorReturn(this, (Video.__proto__ || Object.getPrototypeOf(Video)).call(this, options));
   }
 
   createClass(Video, [{
@@ -1930,7 +2044,7 @@ var Image = function (_ThreeSixtyViewer) {
 
   function Image(options) {
     classCallCheck(this, Image);
-    return possibleConstructorReturn(this, Object.getPrototypeOf(Image).call(this, options));
+    return possibleConstructorReturn(this, (Image.__proto__ || Object.getPrototypeOf(Image)).call(this, options));
   }
 
   createClass(Image, [{
@@ -1952,7 +2066,7 @@ var Canvas = function (_ThreeSixtyViewer) {
   function Canvas(options) {
     classCallCheck(this, Canvas);
 
-    var _this = possibleConstructorReturn(this, Object.getPrototypeOf(Canvas).call(this, options));
+    var _this = possibleConstructorReturn(this, (Canvas.__proto__ || Object.getPrototypeOf(Canvas)).call(this, options));
 
     _this.context = _this.element.getContext('2d');
     return _this;
@@ -1972,12 +2086,12 @@ var Canvas = function (_ThreeSixtyViewer) {
     key: 'destroy',
     value: function destroy() {
       this.video.style.display = '';
-      get(Object.getPrototypeOf(Canvas.prototype), 'destroy', this).call(this);
+      get(Canvas.prototype.__proto__ || Object.getPrototypeOf(Canvas.prototype), 'destroy', this).call(this);
     }
   }, {
     key: 'getElement',
     value: function getElement() {
-      this.video = get(Object.getPrototypeOf(Canvas.prototype), 'getElement', this).call(this);
+      this.video = get(Canvas.prototype.__proto__ || Object.getPrototypeOf(Canvas.prototype), 'getElement', this).call(this);
       this.video.addEventListener('playing', this.startVideoLoop);
       this.video.addEventListener('pause', this.stopVideoLoop);
       this.video.addEventListener('ended', this.stopVideoLoop);
@@ -2014,7 +2128,7 @@ var Audio = function (_ThreeSixtyViewer) {
 
   function Audio(options) {
     classCallCheck(this, Audio);
-    return possibleConstructorReturn(this, Object.getPrototypeOf(Audio).call(this, options));
+    return possibleConstructorReturn(this, (Audio.__proto__ || Object.getPrototypeOf(Audio)).call(this, options));
   }
 
   createClass(Audio, [{
@@ -2063,7 +2177,7 @@ var Audio = function (_ThreeSixtyViewer) {
     key: 'destroy',
     value: function destroy() {
       this.driver.style.display = '';
-      get(Object.getPrototypeOf(Audio.prototype), 'destroy', this).call(this);
+      get(Audio.prototype.__proto__ || Object.getPrototypeOf(Audio.prototype), 'destroy', this).call(this);
     }
   }, {
     key: 'render',
