@@ -44,6 +44,17 @@ export default class Audio extends ThreeSixtyViewer {
     return texture;
   }
 
+  startVideoLoop() {
+    let videoFps = 1000 / 25;
+    let videoLoop = () => {
+      this.element.currentTime = this.driver.currentTime;
+      this.needsUpdate = true;
+      this.videoLoopId = setTimeout(videoLoop, videoFps);
+    }
+
+    videoLoop();
+  }
+
   destroy() {
     this.driver.style.display = '';
     super.destroy();
@@ -57,9 +68,6 @@ export default class Audio extends ThreeSixtyViewer {
       let cameraUpdated = this.controls.update();
       this.renderer.render(this.scene, this.camera, this.needsUpdate || cameraUpdated);
       this.needsUpdate = false;
-      if (this.element.readyState === 4) {
-        this.element.currentTime = this.driver.currentTime;
-      }
       this.animationFrameId = requestAnimationFrame(loop);
     };
     this.startVideoLoop();
