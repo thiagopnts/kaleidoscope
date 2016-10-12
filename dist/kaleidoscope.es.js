@@ -2174,6 +2174,20 @@ var Audio = function (_ThreeSixtyViewer) {
       return texture;
     }
   }, {
+    key: 'startVideoLoop',
+    value: function startVideoLoop() {
+      var _this2 = this;
+
+      var videoFps = 1000 / 25;
+      var videoLoop = function videoLoop() {
+        _this2.element.currentTime = _this2.driver.currentTime;
+        _this2.needsUpdate = true;
+        _this2.videoLoopId = setTimeout(videoLoop, videoFps);
+      };
+
+      videoLoop();
+    }
+  }, {
     key: 'destroy',
     value: function destroy() {
       this.driver.style.display = '';
@@ -2182,19 +2196,16 @@ var Audio = function (_ThreeSixtyViewer) {
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.target.appendChild(this.renderer.el);
       this.element.style.display = 'none';
       this.driver.style.display = 'none';
       var loop = function loop() {
-        var cameraUpdated = _this2.controls.update();
-        _this2.renderer.render(_this2.scene, _this2.camera, _this2.needsUpdate || cameraUpdated);
-        _this2.needsUpdate = false;
-        if (_this2.element.readyState === 4) {
-          _this2.element.currentTime = _this2.driver.currentTime;
-        }
-        _this2.animationFrameId = requestAnimationFrame(loop);
+        var cameraUpdated = _this3.controls.update();
+        _this3.renderer.render(_this3.scene, _this3.camera, _this3.needsUpdate || cameraUpdated);
+        _this3.needsUpdate = false;
+        _this3.animationFrameId = requestAnimationFrame(loop);
       };
       this.startVideoLoop();
       loop();
