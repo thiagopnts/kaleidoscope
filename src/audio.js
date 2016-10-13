@@ -4,6 +4,11 @@ import THREE from 'threejs360';
 export default class Audio extends ThreeSixtyViewer {
   constructor(options) {
     super(options);
+    this.driver.addEventListener('playing', this.startVideoLoop);
+    this.driver.addEventListener('pause', this.stopVideoLoop);
+    this.driver.addEventListener('ended', this.stopVideoLoop);
+    this.driver.addEventListener('stalled', this.stopVideoLoop);
+    this.driverInitialized = false;
   }
 
   play() {
@@ -25,11 +30,15 @@ export default class Audio extends ThreeSixtyViewer {
       this.driver.setAttribute('crossorigin', 'anonymous');
       this.driver.autoplay = this.autoplay || true;
     }
+    this.source = this.driver.src;
+    this.driver.src = '';
+    this.driver.load();
+
     let video = document.createElement('video');
-    video.src = this.driver.src;
     video.setAttribute('crossorigin', 'anonymous');
-    video.addEventListener('error', this.onError);
+    video.src = this.source;
     video.load();
+    video.addEventListener('error', this.onError);
     return video;
   }
 
@@ -46,6 +55,10 @@ export default class Audio extends ThreeSixtyViewer {
 
   startVideoLoop() {
     let videoFps = 1000 / 25;
+    if (this.videoLoopId) {
+      clearTimeout(this.videoLoopId);
+      this.videoLoopId = null;
+    }
     let videoLoop = () => {
       this.element.currentTime = this.driver.currentTime;
       this.needsUpdate = true;
@@ -69,8 +82,13 @@ export default class Audio extends ThreeSixtyViewer {
       this.renderer.render(this.scene, this.camera, this.needsUpdate || cameraUpdated);
       this.needsUpdate = false;
       this.animationFrameId = requestAnimationFrame(loop);
+      let shouldInitializeDriver = (this.element.readyState >= this.element.HAVE_FUTURE_DATA) && !this.driverInitialized;
+      if (shouldInitializeDriver) {
+        this.driver.src = this.source;
+        this.driver.load();
+        this.driverInitialized = true;
+      }
     };
-    this.startVideoLoop();
     loop();
   }
 }

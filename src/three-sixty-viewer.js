@@ -57,6 +57,7 @@ export default class ThreeSixtyViewer {
 
   stopVideoLoop() {
     clearTimeout(this.videoLoopId);
+    this.videoLoopId = null;
     this.needsUpdate = false;
   }
 
@@ -115,6 +116,10 @@ export default class ThreeSixtyViewer {
 
   startVideoLoop() {
     let videoFps = 1000 / 25;
+    if (this.videoLoopId) {
+      clearTimeout(this.videoLoopId);
+      this.videoLoopId = null;
+    }
     let videoLoop = () => {
       this.needsUpdate = true;
       this.videoLoopId = setTimeout(videoLoop, videoFps);
