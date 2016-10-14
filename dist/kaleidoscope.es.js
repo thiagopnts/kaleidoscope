@@ -1922,6 +1922,7 @@ var ThreeSixtyViewer = function () {
     key: 'stopVideoLoop',
     value: function stopVideoLoop() {
       clearTimeout(this.videoLoopId);
+      this.videoLoopId = null;
       this.needsUpdate = false;
     }
   }, {
@@ -1986,6 +1987,10 @@ var ThreeSixtyViewer = function () {
       var _this = this;
 
       var videoFps = 1000 / 25;
+      if (this.videoLoopId) {
+        clearTimeout(this.videoLoopId);
+        this.videoLoopId = null;
+      }
       var videoLoop = function videoLoop() {
         _this.needsUpdate = true;
         _this.videoLoopId = setTimeout(videoLoop, videoFps);
@@ -2128,7 +2133,15 @@ var Audio = function (_ThreeSixtyViewer) {
 
   function Audio(options) {
     classCallCheck(this, Audio);
-    return possibleConstructorReturn(this, (Audio.__proto__ || Object.getPrototypeOf(Audio)).call(this, options));
+
+    var _this = possibleConstructorReturn(this, (Audio.__proto__ || Object.getPrototypeOf(Audio)).call(this, options));
+
+    _this.driver.addEventListener('playing', _this.startVideoLoop);
+    _this.driver.addEventListener('pause', _this.stopVideoLoop);
+    _this.driver.addEventListener('ended', _this.stopVideoLoop);
+    _this.driver.addEventListener('stalled', _this.stopVideoLoop);
+    _this.driverInitialized = false;
+    return _this;
   }
 
   createClass(Audio, [{
@@ -2154,11 +2167,15 @@ var Audio = function (_ThreeSixtyViewer) {
         this.driver.setAttribute('crossorigin', 'anonymous');
         this.driver.autoplay = this.autoplay || true;
       }
+      this.source = this.driver.src;
+      this.driver.src = '';
+      this.driver.load();
+
       var video = document.createElement('video');
-      video.src = this.driver.src;
       video.setAttribute('crossorigin', 'anonymous');
-      video.addEventListener('error', this.onError);
+      video.src = this.source;
       video.load();
+      video.addEventListener('error', this.onError);
       return video;
     }
   }, {
@@ -2179,6 +2196,10 @@ var Audio = function (_ThreeSixtyViewer) {
       var _this2 = this;
 
       var videoFps = 1000 / 25;
+      if (this.videoLoopId) {
+        clearTimeout(this.videoLoopId);
+        this.videoLoopId = null;
+      }
       var videoLoop = function videoLoop() {
         _this2.element.currentTime = _this2.driver.currentTime;
         _this2.needsUpdate = true;
@@ -2206,8 +2227,14 @@ var Audio = function (_ThreeSixtyViewer) {
         _this3.renderer.render(_this3.scene, _this3.camera, _this3.needsUpdate || cameraUpdated);
         _this3.needsUpdate = false;
         _this3.animationFrameId = requestAnimationFrame(loop);
+        var shouldInitializeDriver = _this3.element.readyState >= _this3.element.HAVE_FUTURE_DATA && !_this3.driverInitialized;
+        if (shouldInitializeDriver) {
+          _this3.driver.src = _this3.source;
+          _this3.driver.load();
+          _this3.onDriverReady && _this3.onDriverReady();
+          _this3.driverInitialized = true;
+        }
       };
-      this.startVideoLoop();
       loop();
     }
   }]);
