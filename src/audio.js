@@ -86,6 +86,7 @@ export default class Audio extends ThreeSixtyViewer {
       if (shouldInitializeDriver) {
         this.driver.src = this.source;
         this.driver.load();
+        this.onDriverReady && this.onDriverReady();
         this.driverInitialized = true;
       }
     };

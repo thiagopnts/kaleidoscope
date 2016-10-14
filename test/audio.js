@@ -6,7 +6,6 @@ describe('Audio', () => {
       let viewer = new Audio({source: 'foo.mp4'});
       assert.equal(viewer.driver.tagName, 'AUDIO');
       assert.equal(viewer.element.tagName, 'VIDEO');
-      assert.ok(viewer.driver.src.endsWith('foo.mp4'));
       assert.ok(viewer.element.src.endsWith('foo.mp4'));
     });
 
@@ -17,7 +16,6 @@ describe('Audio', () => {
       assert.equal(viewer.driver, audio);
       assert.equal(viewer.driver.tagName, 'AUDIO');
       assert.equal(viewer.element.tagName, 'VIDEO');
-      assert.ok(viewer.driver.src.endsWith('foo.mp4'));
       assert.ok(viewer.element.src.endsWith('foo.mp4'));
     });
   });
