@@ -15,10 +15,10 @@ export default class Renderer {
     this.mesh = this.createMesh();
   }
 
-  setSize(size) {
-    this.height = size.height;
-    this.width = size.width;
-    this.renderer.setSize(size.width, size.height);
+  setSize({height, width}) {
+    this.height = height;
+    this.width = width;
+    this.renderer.setSize(width, height);
   }
 
   createMesh() {

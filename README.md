@@ -77,6 +77,8 @@ Object.
 
 `viewer.centralize()` move camera back to the original center.
 
+`viewer.setSize({height, width})` sets canvas size.
+
 #### Kaleidoscope.Image
 
 ```js
@@ -114,6 +116,8 @@ Object.
 `viewer.render()` renders the canvas in the defined `containerId` or `container`.
 
 `viewer.centralize()` move camera back to the original center.
+
+`viewer.setSize({height, width})` sets canvas size.
 
 ## Supported Browsers
 

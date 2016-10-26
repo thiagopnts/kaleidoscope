@@ -71,10 +71,10 @@ export default class ThreeSixtyViewer {
     this.renderer.destroy();
   }
 
-  setSize(size) {
-    this.camera.aspect = size.width / size.height;
+  setSize({height, width}) {
+    this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(size);
+    this.renderer.setSize({height, width});
   }
 
   getElement() {
