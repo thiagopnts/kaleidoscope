@@ -1614,10 +1614,13 @@ var Renderer = function () {
     }
   }, {
     key: 'setSize',
-    value: function setSize(size) {
-      this.height = size.height;
-      this.width = size.width;
-      this.renderer.setSize(size.width, size.height);
+    value: function setSize(_ref) {
+      var height = _ref.height;
+      var width = _ref.width;
+
+      this.height = height;
+      this.width = width;
+      this.renderer.setSize(width, height);
     }
   }, {
     key: 'createMesh',
@@ -1660,7 +1663,7 @@ var Controls = function () {
     this.el = this.renderer.el;
     this.theta = this.initialYaw * Math.PI / 180;
     this.phi = 0;
-    this.velo = utils.isiOS() ? 0.07 : 1.6;
+    this.velo = utils.isiOS() ? 0.02 : 1.6;
     this.rotateStart = new THREE.Vector2();
     this.rotateEnd = new THREE.Vector2();
     this.rotateDelta = new THREE.Vector2();
@@ -1938,10 +1941,13 @@ var ThreeSixtyViewer = function () {
     }
   }, {
     key: 'setSize',
-    value: function setSize(size) {
-      this.camera.aspect = size.width / size.height;
+    value: function setSize(_ref) {
+      var height = _ref.height;
+      var width = _ref.width;
+
+      this.camera.aspect = width / height;
       this.camera.updateProjectionMatrix();
-      this.renderer.setSize(size);
+      this.renderer.setSize({ height: height, width: width });
     }
   }, {
     key: 'getElement',
