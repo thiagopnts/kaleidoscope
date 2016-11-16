@@ -12,7 +12,7 @@ export default class Controls {
     this.el = this.renderer.el;
     this.theta = this.initialYaw * Math.PI / 180;
     this.phi = 0;
-    this.velo = utils.isiOS() ? 0.07 : 1.6;
+    this.velo = utils.isiOS() ? 0.02 : 1.6;
     this.rotateStart = new THREE.Vector2();
     this.rotateEnd = new THREE.Vector2();
     this.rotateDelta = new THREE.Vector2();
