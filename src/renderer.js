@@ -6,7 +6,7 @@ export default class Renderer {
     this.renderer = new THREE.WebGLRenderer({antialias: false});
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setSize(this.width, this.height);
-    this.renderer.setPixelRatio(Math.floor(window.devicePixelRatio));
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.el = this.renderer.domElement;
   }
 
