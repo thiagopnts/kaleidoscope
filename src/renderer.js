@@ -3,7 +3,7 @@ import THREE from 'threejs360';
 export default class Renderer {
   constructor(options) {
     Object.assign(this, options);
-    this.renderer = new THREE.WebGLRenderer({antialias: false});
+    this.renderer = new THREE.WebGLRenderer();
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
