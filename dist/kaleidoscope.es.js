@@ -1599,10 +1599,10 @@ var Renderer = function () {
     classCallCheck(this, Renderer);
 
     Object.assign(this, options);
-    this.renderer = new THREE.WebGLRenderer({ antialias: false });
+    this.renderer = new THREE.WebGLRenderer();
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setSize(this.width, this.height);
-    this.renderer.setPixelRatio(Math.floor(window.devicePixelRatio));
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.el = this.renderer.domElement;
   }
 
@@ -1752,7 +1752,7 @@ var Controls = function () {
   }, {
     key: 'getCurrentStyle',
     value: function getCurrentStyle() {
-      return 'height: ' + this.el.style.height + '; width: ' + this.el.style.width + '; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,0);';
+      return 'height: ' + parseInt(this.el.style.height, 10) + 'px; width: ' + parseInt(this.el.style.width, 10) + 'px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,0);';
     }
   }, {
     key: 'addDraggingStyle',
