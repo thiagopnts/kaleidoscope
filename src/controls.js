@@ -88,7 +88,7 @@ export default class Controls {
   }
 
   getCurrentStyle() {
-    return `height: ${this.el.style.height}; width: ${this.el.style.width}; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,0);`;
+    return `height: ${parseInt(this.el.style.height, 10)}px; width: ${parseInt(this.el.style.width, 10)}px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: rgba(0,0,0,0);`;
   }
 
   addDraggingStyle() {
