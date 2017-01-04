@@ -14,6 +14,7 @@ Add the script to your page:
 ```html
 <script src="node_modules/kaleidoscopejs/dist/kaleidoscope.min.js"></script>
 ```
+or import the library using your favorite bundler.
 
 #### Videos
 ```js
@@ -43,7 +44,7 @@ Object.
 </dd>
 </dl>
 
-`options.source` source video to be played. This can be either a video tag or an url to the video file. Passing a tag is useful when embedding in player or using adaptative streaming.
+`options.source` source video to be played. This can be either a video tag or an url to the video file. Passing a tag is useful when embedding in player or using adaptative streaming. An example of how to use it with HLS.js can be found [here.](https://github.com/thiagopnts/kaleidoscope/issues/16#issuecomment-270478823)
 
 `options.containerId` is where you want to render the 360, this is going to be retrieved via `document.querySelector` and when you call `render()` the 360 canvas will be append to it.
 
