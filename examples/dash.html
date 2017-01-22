@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Kaleidoscope dash video example</title>
+    <script type="text/javascript" charset="utf-8" src="https://cdn.rawgit.com/thiagopnts/kaleidoscope/master/dist/kaleidoscope.min.js"> </script>
+    <script src="http://cdn.dashjs.org/latest/dash.all.min.js"></script>
+</head>
+<body>
+    <div id="container360"></div>
+    <script type="text/javascript" charset="utf-8">
+(function() {
+         var video = document.createElement('video');
+         var player = dashjs.MediaPlayer().create();
+         player.initialize(video, 'https://bitmovin-a.akamaihd.net/content/playhouse-vr/mpds/105560.mpd', true);
+
+        var viewer = new Kaleidoscope.Video({source: video, containerId: '#container360', height: window.innerHeight, width: window.innerWidth});
+        viewer.render();
+
+        window.onresize = function() {
+            viewer.setSize({height: window.innerHeight, width: window.innerWidth});
+        };
+})();
+    </script>
+</body>
+</html>
