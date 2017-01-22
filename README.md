@@ -6,6 +6,8 @@ An embeddable, lightweight, dependency-free 360º video/image viewer
 
 ## Examples
 
+The examples code can be found in the `examples/` folder.
+
 [Viewing 360 Images](http://thiago.me/kaleidoscope/examples/image)
 
 [Viewing 360 Videos with HLS](http://thiago.me/kaleidoscope/examples/hls)
