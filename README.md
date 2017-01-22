@@ -4,6 +4,16 @@ An embeddable, lightweight, dependency-free 360º video/image viewer
 
 [demo](http://thiago.me/kaleidoscope)
 
+## Examples
+
+[Viewing 360 Images](http://thiago.me/kaleidoscope/examples/image)
+
+[Viewing 360 Videos with HLS](http://thiago.me/kaleidoscope/examples/hls)
+
+[Viewing 360 Videos with DASH](http://thiago.me/kaleidoscope/examples/dash)
+
+[Viewing 360 Videos with progressive download](http://thiago.me/kaleidoscope/examples/mp4)
+
 ## Usage
 Get the code:
 ```bash
