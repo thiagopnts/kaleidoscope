@@ -9,7 +9,12 @@
     <div id="container360"></div>
     <script type="text/javascript" charset="utf-8">
 (function() {
-    var viewer = new Kaleidoscope.Video({source: 'http://thiago.me/demo-360/cool.mp4', containerId: '#container360'});
+    var viewer = new Kaleidoscope.Video({
+        source: 'http://thiago.me/demo-360/cool.mp4',
+        containerId: '#container360',
+        height: window.innerHeight,
+        width: window.innerWidth
+    });
     viewer.render();
     window.onresize = function() {
         viewer.setSize({height: window.innerHeight, width: window.innerWidth});

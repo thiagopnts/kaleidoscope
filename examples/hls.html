@@ -22,7 +22,12 @@
              video.play()
         });
 
-        var viewer = new Kaleidoscope.Video({source: video, containerId: '#container360'});
+        var viewer = new Kaleidoscope.Video({
+            source: video,
+            containerId: '#container360',
+            height: window.innerHeight,
+            width: window.innerWidth
+        });
         viewer.render();
 
         window.onresize = function() {
