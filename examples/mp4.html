@@ -9,9 +9,10 @@
     <div id="container360"></div>
     <script type="text/javascript" charset="utf-8">
 (function() {
+    var containerSelector = '#container360';
     var viewer = new Kaleidoscope.Video({
         source: 'http://thiago.me/demo-360/cool.mp4',
-        containerId: '#container360',
+        containerId: containerSelector,
         height: window.innerHeight,
         width: window.innerWidth
     });
@@ -19,6 +20,7 @@
     window.onresize = function() {
         viewer.setSize({height: window.innerHeight, width: window.innerWidth});
     };
+    document.querySelector(containerSelector).addEventListener('touchend', viewer.play.bind(viewer));
 })();
     </script>
 </body>
