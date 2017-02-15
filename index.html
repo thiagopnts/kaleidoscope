@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>index</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta id="extViewportMeta" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <style>
+    html,body, center {
+      height: 100%;
+    }
+
+    body, html {
+     margin: 0 auto;
+    }
+
+    #wrapper {
+        position: relative;
+        width: 60%;
+        height: 50%;
+        background: black;
+    }
+    button {
+        height: 7%;
+        width: 60%;
+        margin-top: 30px;
+        font-size: 2em;
+    }
+
+    @media (max-width: 1000px) {
+        #wrapper {
+            width: 100%;
+        }
+    }
+</style>
+</head>
+<body>
+    <center>
+<!--        <div id="wrapper"></div> -->
+<div id="target"></div>
+
+    </center>
+
+    <script type="text/javascript" charset="utf-8" src="dist/kaleidoscope.min.js"> </script>
+    <script type="text/javascript" charset="utf-8">
+      this.viewer = new Kaleidoscope.Video({autoplay: true, muted: false, height: 360, width: 640, source: 'http://thiago.me/demo-360/cool.mp4', containerId: '#target'});
+      this.viewer.render();
+      document.body.addEventListener('click', function() {
+          this.viewer.play();
+      }.bind(this));
+
+    </script>
+</body>
+</html>
