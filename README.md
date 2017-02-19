@@ -10,11 +10,13 @@ The examples code can be found in the `examples/` folder.
 
 [Viewing 360 Images](http://thiago.me/kaleidoscope/examples/image)
 
-[Viewing 360 Videos with HLS](http://thiago.me/kaleidoscope/examples/hls)
+[Viewing 360 Videos with HLS](http://thiago.me/kaleidoscope/examples/hls)*
 
-[Viewing 360 Videos with DASH](http://thiago.me/kaleidoscope/examples/dash)
+[Viewing 360 Videos with DASH](http://thiago.me/kaleidoscope/examples/dash)*
 
 [Viewing 360 Videos with progressive download](http://thiago.me/kaleidoscope/examples/mp4)
+
+* The HLS and Dash examples doesn't work on old Safari and iOS due CORS restrictions
 
 ## Usage
 Get the code:
