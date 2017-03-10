@@ -149,3 +149,9 @@ Object.
 ## Known issues
 
 360 videos doesn't work in Safari, IE 11, Microsoft Edge, Android and iOS if the video is served from a different domain, due some CORS [implementation bugs](https://bugs.webkit.org/show_bug.cgi?id=135379).
+
+## Donations
+
+Would you like to buy me a beer?
+ETH 0x2230591c013e4E7e3B819B2B51496e34ED884c03
+BTC 16qKaBh6DuuJuaQp4x3Eut8MAsVnpacVm5
