@@ -153,5 +153,7 @@ Object.
 ## Donations
 
 Would you like to buy me a beer?
+
 ETH 0x2230591c013e4E7e3B819B2B51496e34ED884c03
+
 BTC 16qKaBh6DuuJuaQp4x3Eut8MAsVnpacVm5
