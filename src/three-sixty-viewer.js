@@ -128,6 +128,10 @@ export default class ThreeSixtyViewer {
     videoLoop();
   }
 
+  onViewDirectionChange(cb) {
+    this.viewDirectionChangeCb = cb;
+  }
+
   render() {
     this.target.appendChild(this.renderer.el);
     this.element.style.display = 'none';
@@ -136,6 +140,13 @@ export default class ThreeSixtyViewer {
       this.animationFrameId = requestAnimationFrame(loop);
       let cameraUpdated = this.controls.update();
       this.renderer.render(this.scene, this.camera, this.needsUpdate || cameraUpdated);
+      if(this.viewDirectionChangeCb) {
+        if(this.viewDirectionChangeLastPhiSent !== this.controls.phi || this.viewDirectionChangeLastThetaSent !== this.controls.theta) {
+          this.viewDirectionChangeCb({phi: this.controls.phi, theta: this.controls.theta});
+          this.viewDirectionChangeLastThetaSent = this.controls.theta;
+          this.viewDirectionChangeLastPhiSent = this.controls.phi;
+        }
+      }
       this.needsUpdate = false;
     };
 
