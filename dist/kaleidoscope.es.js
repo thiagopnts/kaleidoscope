@@ -19920,17 +19920,25 @@ var Controls = function () {
     this.momentum = false;
     this.isUserInteracting = false;
     this.addDraggableStyle();
-    this.onMouseMove = this.onMouseMove.bind(this);
-    this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onGrabMove = this.onGrabMove.bind(this);
+    this.onGrabDown = this.onGrabDown.bind(this);
+    this.onGrabUp = this.onGrabUp.bind(this);
     this.onTouchStart = function (e) {
-      return _this.onMouseDown({ clientX: e.touches[0].pageX, clientY: e.touches[0].pageY });
+      return _this.onGrabDown({
+        clientX: e.touches[0].pageX,
+        clientY: e.touches[0].pageY,
+        isTouch: true
+      });
     };
     this.onTouchMove = function (e) {
-      return _this.onMouseMove({ clientX: e.touches[0].pageX, clientY: e.touches[0].pageY });
+      return _this.onGrabMove({
+        clientX: e.touches[0].pageX,
+        clientY: e.touches[0].pageY,
+        isTouch: true
+      });
     };
     this.onTouchEnd = function (_) {
-      return _this.onMouseUp();
+      return _this.onGrabUp();
     };
     this.onDeviceMotion = this.onDeviceMotion.bind(this);
     this.onMessage = this.onMessage.bind(this);
@@ -19940,10 +19948,10 @@ var Controls = function () {
   createClass(Controls, [{
     key: 'bindEvents',
     value: function bindEvents() {
-      this.el.addEventListener('mouseleave', this.onMouseUp);
-      this.el.addEventListener('mousemove', this.onMouseMove);
-      this.el.addEventListener('mousedown', this.onMouseDown);
-      this.el.addEventListener('mouseup', this.onMouseUp);
+      this.el.addEventListener('mouseleave', this.onGrabUp);
+      this.el.addEventListener('mousemove', this.onGrabMove);
+      this.el.addEventListener('mousedown', this.onGrabDown);
+      this.el.addEventListener('mouseup', this.onGrabUp);
       this.el.addEventListener('touchstart', this.onTouchStart);
       this.el.addEventListener('touchmove', this.onTouchMove);
       this.el.addEventListener('touchend', this.onTouchEnd);
@@ -19987,10 +19995,10 @@ var Controls = function () {
   }, {
     key: 'destroy',
     value: function destroy() {
-      this.el.removeEventListener('mouseleave', this.onMouseUp);
-      this.el.removeEventListener('mousemove', this.onMouseMove);
-      this.el.removeEventListener('mousedown', this.onMouseDown);
-      this.el.removeEventListener('mouseup', this.onMouseUp);
+      this.el.removeEventListener('mouseleave', this.onGrabUp);
+      this.el.removeEventListener('mousemove', this.onGrabMove);
+      this.el.removeEventListener('mousedown', this.onGrabDown);
+      this.el.removeEventListener('mouseup', this.onGrabUp);
       this.el.removeEventListener('touchstart', this.onTouchStart);
       this.el.removeEventListener('touchmove', this.onTouchMove);
       this.el.removeEventListener('touchend', this.onTouchEnd);
@@ -20050,12 +20058,12 @@ var Controls = function () {
       this.adjustPhi();
     }
   }, {
-    key: 'onMouseMove',
-    value: function onMouseMove(event) {
+    key: 'onGrabMove',
+    value: function onGrabMove(event) {
       if (!this.isUserInteracting) {
         return;
       }
-      this.rotateEnd.set(event.clientX, event.clientY);
+      this.rotateEnd.set(event.clientX, event.isTouch && this.doNotControlGazeWithVerticalTouch ? this.rotateStart.y : event.clientY);
 
       this.rotateDelta.subVectors(this.rotateEnd, this.rotateStart);
       this.rotateStart.copy(this.rotateEnd);
@@ -20071,8 +20079,8 @@ var Controls = function () {
       this.phi = THREE.Math.clamp(this.phi, -Math.PI / 1.95, Math.PI / 1.95);
     }
   }, {
-    key: 'onMouseDown',
-    value: function onMouseDown(event) {
+    key: 'onGrabDown',
+    value: function onGrabDown(event) {
       this.addDraggingStyle();
       this.rotateStart.set(event.clientX, event.clientY);
       this.isUserInteracting = true;
@@ -20090,8 +20098,8 @@ var Controls = function () {
       this.adjustPhi();
     }
   }, {
-    key: 'onMouseUp',
-    value: function onMouseUp() {
+    key: 'onGrabUp',
+    value: function onGrabUp() {
       this.isUserInteracting && this.onDragStop && this.onDragStop();
       this.addDraggableStyle();
       this.isUserInteracting = false;
@@ -20136,7 +20144,8 @@ var ThreeSixtyViewer = function () {
       initialYaw: initialYaw,
       verticalPanning: verticalPanning,
       onDragStart: onDragStart,
-      onDragStop: onDragStop
+      onDragStop: onDragStop,
+      doNotControlGazeWithVerticalTouch: options.doNotControlGazeWithVerticalTouch
     });
     this.stopVideoLoop = this.stopVideoLoop.bind(this);
     this.onError = this.onError.bind(this);

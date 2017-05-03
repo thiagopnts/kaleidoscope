@@ -26,6 +26,7 @@ export default class ThreeSixtyViewer {
         verticalPanning,
         onDragStart,
         onDragStop,
+        doNotControlGazeWithVerticalTouch: options.doNotControlGazeWithVerticalTouch
     });
     this.stopVideoLoop = this.stopVideoLoop.bind(this);
     this.onError = this.onError.bind(this);
