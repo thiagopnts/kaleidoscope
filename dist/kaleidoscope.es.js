@@ -19923,6 +19923,7 @@ var Controls = function () {
     this.onGrabMove = this.onGrabMove.bind(this);
     this.onGrabDown = this.onGrabDown.bind(this);
     this.onGrabUp = this.onGrabUp.bind(this);
+    this.onGyroActivity = this.onGyroActivity.bind(this);
     this.onTouchStart = function (e) {
       return _this.onGrabDown({
         clientX: e.touches[0].pageX,
@@ -20045,6 +20046,9 @@ var Controls = function () {
       }
       var alpha = THREE.Math.degToRad(event.rotationRate.alpha);
       var beta = THREE.Math.degToRad(event.rotationRate.beta);
+      if (Math.abs(alpha) > 0 || Math.abs(beta) > 0) {
+        this.onGyroActivity();
+      }
       if (portrait) {
         this.phi = this.verticalPanning ? this.phi + alpha * this.velo : this.phi;
         this.theta = this.theta - beta * this.velo * -1;
@@ -20123,6 +20127,8 @@ var Controls = function () {
 
 var ThreeSixtyViewer = function () {
   function ThreeSixtyViewer() {
+    var _this = this;
+
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     classCallCheck(this, ThreeSixtyViewer);
 
@@ -20145,6 +20151,11 @@ var ThreeSixtyViewer = function () {
       verticalPanning: verticalPanning,
       onDragStart: onDragStart,
       onDragStop: onDragStop,
+      onGyroActivity: function onGyroActivity() {
+        if (_this.gyroActivityCb) {
+          _this.gyroActivityCb();
+        }
+      },
       doNotControlGazeWithVerticalTouch: options.doNotControlGazeWithVerticalTouch
     });
     this.stopVideoLoop = this.stopVideoLoop.bind(this);
@@ -20247,7 +20258,7 @@ var ThreeSixtyViewer = function () {
   }, {
     key: 'startVideoLoop',
     value: function startVideoLoop() {
-      var _this = this;
+      var _this2 = this;
 
       var videoFps = 1000 / 25;
       if (this.videoLoopId) {
@@ -20255,8 +20266,8 @@ var ThreeSixtyViewer = function () {
         this.videoLoopId = null;
       }
       var videoLoop = function videoLoop() {
-        _this.needsUpdate = true;
-        _this.videoLoopId = setTimeout(videoLoop, videoFps);
+        _this2.needsUpdate = true;
+        _this2.videoLoopId = setTimeout(videoLoop, videoFps);
       };
 
       videoLoop();
@@ -20267,25 +20278,30 @@ var ThreeSixtyViewer = function () {
       this.viewDirectionChangeCb = cb;
     }
   }, {
+    key: 'onGyroActivity',
+    value: function onGyroActivity(cb) {
+      this.gyroActivityCb = cb;
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.target.appendChild(this.renderer.el);
       this.element.style.display = 'none';
 
       var loop = function loop() {
-        _this2.animationFrameId = requestAnimationFrame(loop);
-        var cameraUpdated = _this2.controls.update();
-        _this2.renderer.render(_this2.scene, _this2.camera, _this2.needsUpdate || cameraUpdated);
-        if (_this2.viewDirectionChangeCb) {
-          if (_this2.viewDirectionChangeLastPhiSent !== _this2.controls.phi || _this2.viewDirectionChangeLastThetaSent !== _this2.controls.theta) {
-            _this2.viewDirectionChangeCb({ phi: _this2.controls.phi, theta: _this2.controls.theta });
-            _this2.viewDirectionChangeLastThetaSent = _this2.controls.theta;
-            _this2.viewDirectionChangeLastPhiSent = _this2.controls.phi;
+        _this3.animationFrameId = requestAnimationFrame(loop);
+        var cameraUpdated = _this3.controls.update();
+        _this3.renderer.render(_this3.scene, _this3.camera, _this3.needsUpdate || cameraUpdated);
+        if (_this3.viewDirectionChangeCb) {
+          if (_this3.viewDirectionChangeLastPhiSent !== _this3.controls.phi || _this3.viewDirectionChangeLastThetaSent !== _this3.controls.theta) {
+            _this3.viewDirectionChangeCb({ phi: _this3.controls.phi, theta: _this3.controls.theta });
+            _this3.viewDirectionChangeLastThetaSent = _this3.controls.theta;
+            _this3.viewDirectionChangeLastPhiSent = _this3.controls.phi;
           }
         }
-        _this2.needsUpdate = false;
+        _this3.needsUpdate = false;
       };
 
       this.startVideoLoop();

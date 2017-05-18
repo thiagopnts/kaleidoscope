@@ -24,6 +24,7 @@ export default class Controls {
     this.onGrabMove = this.onGrabMove.bind(this);
     this.onGrabDown = this.onGrabDown.bind(this);
     this.onGrabUp = this.onGrabUp.bind(this);
+    this.onGyroActivity = this.onGyroActivity.bind(this);
     this.onTouchStart = e => this.onGrabDown({
       clientX: e.touches[0].pageX,
       clientY: e.touches[0].pageY,
@@ -125,6 +126,9 @@ export default class Controls {
     }
     let alpha = THREE.Math.degToRad(event.rotationRate.alpha);
     let beta = THREE.Math.degToRad(event.rotationRate.beta);
+    if(Math.abs(alpha) > 0 || Math.abs(beta) > 0) {
+      this.onGyroActivity();
+    }
     if (portrait) {
       this.phi = this.verticalPanning ? this.phi + alpha * this.velo : this.phi;
       this.theta = this.theta - beta * this.velo * -1;

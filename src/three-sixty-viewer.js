@@ -26,6 +26,11 @@ export default class ThreeSixtyViewer {
         verticalPanning,
         onDragStart,
         onDragStop,
+        onGyroActivity: () => {
+          if(this.gyroActivityCb) {
+            this.gyroActivityCb();
+          }
+        },
         doNotControlGazeWithVerticalTouch: options.doNotControlGazeWithVerticalTouch
     });
     this.stopVideoLoop = this.stopVideoLoop.bind(this);
@@ -131,6 +136,10 @@ export default class ThreeSixtyViewer {
 
   onViewDirectionChange(cb) {
     this.viewDirectionChangeCb = cb;
+  }
+
+  onGyroActivity(cb) {
+    this.gyroActivityCb = cb;
   }
 
   render() {
