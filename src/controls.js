@@ -21,22 +21,31 @@ export default class Controls {
     this.momentum = false;
     this.isUserInteracting = false;
     this.addDraggableStyle();
-    this.onMouseMove = this.onMouseMove.bind(this);
-    this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseUp = this.onMouseUp.bind(this);
-    this.onTouchStart = e => this.onMouseDown({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY});
-    this.onTouchMove = e => this.onMouseMove({clientX: e.touches[0].pageX, clientY: e.touches[0].pageY});
-    this.onTouchEnd = _ => this.onMouseUp();
+    this.onGrabMove = this.onGrabMove.bind(this);
+    this.onGrabDown = this.onGrabDown.bind(this);
+    this.onGrabUp = this.onGrabUp.bind(this);
+    this.onGyroActivity = this.onGyroActivity.bind(this);
+    this.onTouchStart = e => this.onGrabDown({
+      clientX: e.touches[0].pageX,
+      clientY: e.touches[0].pageY,
+      isTouch: true
+    });
+    this.onTouchMove = e => this.onGrabMove({
+      clientX: e.touches[0].pageX,
+      clientY: e.touches[0].pageY,
+      isTouch: true
+    });
+    this.onTouchEnd = _ => this.onGrabUp();
     this.onDeviceMotion = this.onDeviceMotion.bind(this);
     this.onMessage = this.onMessage.bind(this);
     this.bindEvents();
   }
 
   bindEvents() {
-    this.el.addEventListener('mouseleave', this.onMouseUp);
-    this.el.addEventListener('mousemove', this.onMouseMove);
-    this.el.addEventListener('mousedown', this.onMouseDown);
-    this.el.addEventListener('mouseup', this.onMouseUp);
+    this.el.addEventListener('mouseleave', this.onGrabUp);
+    this.el.addEventListener('mousemove', this.onGrabMove);
+    this.el.addEventListener('mousedown', this.onGrabDown);
+    this.el.addEventListener('mouseup', this.onGrabUp);
     this.el.addEventListener('touchstart', this.onTouchStart);
     this.el.addEventListener('touchmove', this.onTouchMove);
     this.el.addEventListener('touchend', this.onTouchEnd);
@@ -76,10 +85,10 @@ export default class Controls {
   }
 
   destroy() {
-    this.el.removeEventListener('mouseleave', this.onMouseUp);
-    this.el.removeEventListener('mousemove', this.onMouseMove);
-    this.el.removeEventListener('mousedown', this.onMouseDown);
-    this.el.removeEventListener('mouseup', this.onMouseUp);
+    this.el.removeEventListener('mouseleave', this.onGrabUp);
+    this.el.removeEventListener('mousemove', this.onGrabMove);
+    this.el.removeEventListener('mousedown', this.onGrabDown);
+    this.el.removeEventListener('mouseup', this.onGrabUp);
     this.el.removeEventListener('touchstart', this.onTouchStart);
     this.el.removeEventListener('touchmove', this.onTouchMove);
     this.el.removeEventListener('touchend', this.onTouchEnd);
@@ -117,6 +126,9 @@ export default class Controls {
     }
     let alpha = THREE.Math.degToRad(event.rotationRate.alpha);
     let beta = THREE.Math.degToRad(event.rotationRate.beta);
+    if(Math.abs(alpha) > 0 || Math.abs(beta) > 0) {
+      this.onGyroActivity();
+    }
     if (portrait) {
       this.phi = this.verticalPanning ? this.phi + alpha * this.velo : this.phi;
       this.theta = this.theta - beta * this.velo * -1;
@@ -130,11 +142,16 @@ export default class Controls {
     this.adjustPhi();
   }
 
-  onMouseMove(event) {
+  onGrabMove(event) {
     if (!this.isUserInteracting) {
       return;
     }
-    this.rotateEnd.set(event.clientX, event.clientY);
+    this.rotateEnd.set(
+      event.clientX,
+      (event.isTouch && this.doNotControlGazeWithVerticalTouch) ?
+        this.rotateStart.y :
+        event.clientY
+      );
 
     this.rotateDelta.subVectors(this.rotateEnd, this.rotateStart);
     this.rotateStart.copy(this.rotateEnd);
@@ -149,7 +166,7 @@ export default class Controls {
     this.phi = THREE.Math.clamp(this.phi, -Math.PI / 1.95, Math.PI / 1.95);
   }
 
-  onMouseDown(event) {
+  onGrabDown(event) {
     this.addDraggingStyle();
     this.rotateStart.set(event.clientX, event.clientY);
     this.isUserInteracting = true;
@@ -166,7 +183,7 @@ export default class Controls {
     this.adjustPhi();
   }
 
-  onMouseUp() {
+  onGrabUp() {
     this.isUserInteracting && this.onDragStop && this.onDragStop();
     this.addDraggableStyle();
     this.isUserInteracting = false;
