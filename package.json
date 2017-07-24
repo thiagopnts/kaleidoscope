@@ -6,7 +6,8 @@
   "jsnext:main": "dist/kaleidoscope.es.js",
   "scripts": {
     "test": "karma start --single-run",
-    "build": "rollup -c && cat dist/kaleidoscope.js | uglifyjs --screw-ie8 -m -c > dist/kaleidoscope.min.js && cat dist/kaleidoscope.iife.js | uglifyjs --screw-ie8 -m -c > dist/kaleidoscope.iife.min.js"
+    "build": "rollup -c",
+    "build-prod": "BABEL_ENV=production rollup -c && cat dist/kaleidoscope.js | uglifyjs -m -c > dist/kaleidoscope.min.js && cat dist/kaleidoscope.iife.js | uglifyjs -m toplevel -c  > dist/kaleidoscope.iife.min.js"
   },
   "files": [
     "package.json",
@@ -27,6 +28,13 @@
         }
       ]
     ],
+    "env": {
+      "production": {
+        "presets": [
+          "babili"
+        ]
+      }
+    },
     "plugins": [
       "external-helpers"
     ]
@@ -56,6 +64,7 @@
     "babel-plugin-espower": "^2.3.1",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-runtime": "^6.12.0",
+    "babel-preset-babili": "^0.1.4",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2015-rollup": "^1.1.1",
     "babel-preset-stage-2": "^6.11.0",
@@ -78,7 +87,7 @@
     "rollup-plugin-strip": "^1.1.1",
     "rollup-plugin-uglify": "^1.0.1",
     "sinon": "^1.17.3",
-    "uglify-js": "^2.6.4"
+    "uglify-js": "^3.0.26"
   },
   "dependencies": {
     "threejs360": "1.0.3"
