@@ -159,8 +159,8 @@ export default class Controls {
 
   inertia() {
     if (!this.momentum) return;
-    this.rotateDelta.y *= 0.85;
-    this.rotateDelta.x *= 0.85;
+    this.rotateDelta.y *= 0.90;
+    this.rotateDelta.x *= 0.90;
     this.theta += 0.005 * this.rotateDelta.x;
     this.phi = this.verticalPanning ? this.phi + 0.005 * this.rotateDelta.y : this.phi;
     this.adjustPhi();
@@ -171,6 +171,7 @@ export default class Controls {
     this.addDraggableStyle();
     this.isUserInteracting = false;
     this.momentum = true;
+    this.inertia();
   }
 
   update() {
