@@ -1,8 +1,6 @@
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
-import uglify from 'rollup-plugin-uglify';
-import { minify } from 'uglify-js';
 import strip from 'rollup-plugin-strip';
 
 
@@ -18,7 +16,7 @@ export default {
     babel(),
   ],
   moduleName: 'Kaleidoscope',
-  moduleId: 'kaleidoscope',
+  amd: { id: 'kaleidoscope' },
   targets: [
     {dest: 'dist/kaleidoscope.js', format: 'umd'},
     {dest: 'dist/kaleidoscope.iife.js', format: 'iife'},
