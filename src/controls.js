@@ -1,4 +1,4 @@
-import THREE from 'threejs360';
+import {Vector2, Quaternion, Euler, Math as TMath } from 'three';
 import utils from './utils'
 
 let easeOutBack = k => {
@@ -13,11 +13,11 @@ export default class Controls {
     this.theta = this.initialYaw * Math.PI / 180;
     this.phi = 0;
     this.velo = utils.isiOS() ? 0.02 : 1.6;
-    this.rotateStart = new THREE.Vector2();
-    this.rotateEnd = new THREE.Vector2();
-    this.rotateDelta = new THREE.Vector2();
-    this.orientation = new THREE.Quaternion();
-    this.euler = new THREE.Euler();
+    this.rotateStart = new Vector2();
+    this.rotateEnd = new Vector2();
+    this.rotateDelta = new Vector2();
+    this.orientation = new Quaternion();
+    this.euler = new Euler();
     this.momentum = false;
     this.isUserInteracting = false;
     this.addDraggableStyle();
@@ -115,8 +115,8 @@ export default class Controls {
     } else {
       orientation = -90;
     }
-    let alpha = THREE.Math.degToRad(event.rotationRate.alpha);
-    let beta = THREE.Math.degToRad(event.rotationRate.beta);
+    let alpha = TMath.degToRad(event.rotationRate.alpha);
+    let beta = TMath.degToRad(event.rotationRate.beta);
     if (portrait) {
       this.phi = this.verticalPanning ? this.phi + alpha * this.velo : this.phi;
       this.theta = this.theta - beta * this.velo * -1;
@@ -146,7 +146,7 @@ export default class Controls {
 
   adjustPhi() {
     // Prevent looking too far up or down.
-    this.phi = THREE.Math.clamp(this.phi, -Math.PI / 1.95, Math.PI / 1.95);
+    this.phi = TMath.clamp(this.phi, -Math.PI / 1.95, Math.PI / 1.95);
   }
 
   onMouseDown(event) {

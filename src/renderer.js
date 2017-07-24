@@ -1,9 +1,9 @@
-import THREE from 'threejs360';
+import {WebGLRenderer, MeshBasicMaterial, Mesh, SphereGeometry} from 'three';
 
 export default class Renderer {
   constructor(options) {
     Object.assign(this, options);
-    this.renderer = new THREE.WebGLRenderer();
+    this.renderer = new WebGLRenderer();
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -22,10 +22,10 @@ export default class Renderer {
   }
 
   createMesh() {
-    this.material = new THREE.MeshBasicMaterial({map: this.texture});
-    this.geometry = new THREE.SphereGeometry(1, 50, 50);
+    this.material = new MeshBasicMaterial({map: this.texture});
+    this.geometry = new SphereGeometry(1, 50, 50);
     this.geometry.scale(-1, 1, 1);
-    let mesh = new THREE.Mesh(this.geometry, this.material);
+    let mesh = new Mesh(this.geometry, this.material);
     return mesh;
   }
 
