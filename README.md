@@ -1,5 +1,6 @@
 <img src="kaleidoscope.gif" height="150" width="100%"/>
 # Kaleidoscope
+
 An embeddable, lightweight, dependency-free 360º video/image viewer
 
 [demo](http://thiago.me/kaleidoscope)
