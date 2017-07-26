@@ -3,7 +3,7 @@
   "version": "1.0.14",
   "description": "360º video/image viewer",
   "main": "dist/kaleidoscope.min.js",
-  "jsnext:main": "dist/kaleidoscope.es.js",
+  "module": "dist/kaleidoscope.es.js",
   "scripts": {
     "test": "karma start --single-run",
     "build": "rollup -c",
