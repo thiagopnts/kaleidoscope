@@ -96,6 +96,8 @@ Object.
 
 `viewer.setSize({height, width})` sets canvas size.
 
+`viewer.destroy()` destroy viewer cleaning up all used resources.
+
 #### Kaleidoscope.Image
 
 ```js
@@ -135,6 +137,8 @@ Object.
 `viewer.centralize()` move camera back to the original center.
 
 `viewer.setSize({height, width})` sets canvas size.
+
+`viewer.destroy()` destroy viewer cleaning up all used resources.
 
 ## Supported Browsers
 
