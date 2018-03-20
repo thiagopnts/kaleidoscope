@@ -20253,8 +20253,8 @@ var Canvas = function (_ThreeSixtyViewer) {
       this.video.addEventListener('pause', this.stopVideoLoop);
       this.video.addEventListener('ended', this.stopVideoLoop);
       var canvas = document.createElement('canvas');
-      canvas.height = this.height;
-      canvas.width = this.width;
+      canvas.height = this.video.videoHeight;
+      canvas.width = this.video.videoWidth;
       return canvas;
     }
   }, {
@@ -20266,8 +20266,16 @@ var Canvas = function (_ThreeSixtyViewer) {
       this.video.style.display = 'none';
       var loop = function loop() {
         _this2.animationFrameId = requestAnimationFrame(loop);
-        _this2.context.clearRect(0, 0, _this2.width, _this2.height);
-        _this2.context.drawImage(_this2.video, 0, 0, _this2.width, _this2.height);
+        var h = _this2.video.videoHeight;
+        var w = _this2.video.videoWidth;
+        if (_this2.element.height != h) {
+          _this2.element.height = h;
+        }
+        if (_this2.element.width != w) {
+          _this2.element.width = w;
+        }
+        _this2.context.clearRect(0, 0, w, h);
+        _this2.context.drawImage(_this2.video, 0, 0, w, h);
         var cameraUpdated = _this2.controls.update();
         _this2.renderer.render(_this2.scene, _this2.camera, _this2.needsUpdate || cameraUpdated);
         _this2.renderer.mesh.material.map.needsUpdate = true;
