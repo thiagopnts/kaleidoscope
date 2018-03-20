@@ -25,8 +25,8 @@ export default class Canvas extends ThreeSixtyViewer {
     this.video.addEventListener('pause', this.stopVideoLoop);
     this.video.addEventListener('ended', this.stopVideoLoop);
     let canvas = document.createElement('canvas');
-    canvas.height = this.height;
-    canvas.width = this.width;
+    canvas.height = this.video.videoHeight;
+    canvas.width = this.video.videoWidth;
     return canvas;
   }
 
@@ -35,8 +35,16 @@ export default class Canvas extends ThreeSixtyViewer {
     this.video.style.display = 'none';
     let loop = () => {
       this.animationFrameId = requestAnimationFrame(loop);
-      this.context.clearRect(0, 0, this.width, this.height);
-      this.context.drawImage(this.video, 0, 0, this.width, this.height);
+      let h = this.video.videoHeight;
+      let w = this.video.videoWidth;
+      if (this.element.height != h) {
+	this.element.height = h;
+      }
+      if (this.element.width != w) {
+	this.element.width = w;
+      }
+      this.context.clearRect(0, 0, w, h);
+      this.context.drawImage(this.video, 0, 0, w, h);
       let cameraUpdated = this.controls.update();
       this.renderer.render(this.scene, this.camera, this.needsUpdate || cameraUpdated);
       this.renderer.mesh.material.map.needsUpdate = true
