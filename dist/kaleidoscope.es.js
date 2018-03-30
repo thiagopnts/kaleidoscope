@@ -3,6 +3,10 @@ var utils = {
     return (/(ipad|iphone|ipod)/ig.test(navigator.userAgent)
     );
   },
+  isEdge: function isEdge() {
+    return (/(Edge)/ig.test(navigator.userAgent)
+    );
+  },
   shouldUseAudioDriver: function shouldUseAudioDriver() {
     var isOldiOSOnIphone = /iphone.*(7|8|9)_[0-9]/i.test(navigator.userAgent);
     var isWebView = /(iPhone|iPod).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent);
@@ -19808,7 +19812,7 @@ var Controls = function () {
     this.el = this.renderer.el;
     this.theta = this.initialYaw * Math.PI / 180;
     this.phi = 0;
-    this.velo = utils.isiOS() ? 0.02 : 1.6;
+    this.velo = utils.isiOS() || utils.isEdge() ? 0.02 : 1.6;
     this.rotateStart = new THREE.Vector2();
     this.rotateEnd = new THREE.Vector2();
     this.rotateDelta = new THREE.Vector2();
