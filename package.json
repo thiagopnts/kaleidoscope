@@ -1,6 +1,6 @@
 {
   "name": "kaleidoscopejs",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "360º video/image viewer",
   "main": "dist/kaleidoscope.min.js",
   "module": "dist/kaleidoscope.es.js",
