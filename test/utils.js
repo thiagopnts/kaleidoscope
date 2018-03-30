@@ -24,6 +24,11 @@ describe('utils', () => {
     assert.ok(!utils.isiOS());
   });
 
+  it('#isEdge', () => {
+    setUserAgent(edgeUserAgent);
+    assert.ok(utils.isEdge());
+  });
+
   it('#shouldUseAudioDriver', () => {
     setUserAgent(iphoneUserAgent);
     assert.ok(utils.shouldUseAudioDriver());
