@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/hls.js/latest/hls.min.js"></script>
 </head>
 <body>
+    <p>tap/click to page to start</p>
     <div id="container360"></div>
     <script type="text/javascript" charset="utf-8">
 (function() {
@@ -22,17 +23,21 @@
              video.play()
         });
 
-        var viewer = new Kaleidoscope.Video({
+        this.viewer = new Kaleidoscope.Video({
             source: video,
             containerId: '#container360',
             height: window.innerHeight,
             width: window.innerWidth
         });
-        viewer.render();
+        this.viewer.render();
 
         window.onresize = function() {
-            viewer.setSize({height: window.innerHeight, width: window.innerWidth});
-        };
+            this.viewer.setSize({height: window.innerHeight, width: window.innerWidth});
+        }.bind(this);
+        document.body.addEventListener('click', function() {
+            this.viewer.play();
+        }.bind(this));
+        document.querySelector(containerSelector).addEventListener('touchend', this.viewer.play.bind(this.viewer));
      } else {
          alert("HLS.js doesn't work with your current browser");
      }

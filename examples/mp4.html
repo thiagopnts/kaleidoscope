@@ -6,21 +6,25 @@
     <script type="text/javascript" charset="utf-8" src="https://cdn.rawgit.com/thiagopnts/kaleidoscope/master/dist/kaleidoscope.min.js"> </script>
 </head>
 <body>
+    <p>tap/click to page to start</p>
     <div id="container360"></div>
     <script type="text/javascript" charset="utf-8">
 (function() {
     var containerSelector = '#container360';
-    var viewer = new Kaleidoscope.Video({
+    this.viewer = new Kaleidoscope.Video({
         source: 'http://thiago.me/demo-360/cool.mp4',
         containerId: containerSelector,
         height: window.innerHeight,
         width: window.innerWidth
     });
-    viewer.render();
+    this.viewer.render();
     window.onresize = function() {
-        viewer.setSize({height: window.innerHeight, width: window.innerWidth});
-    };
-    document.querySelector(containerSelector).addEventListener('touchend', viewer.play.bind(viewer));
+        this.viewer.setSize({height: window.innerHeight, width: window.innerWidth});
+    }.bind(this);
+    document.querySelector(containerSelector).addEventListener('touchend', this.viewer.play.bind(this.viewer));
+    document.body.addEventListener('click', function() {
+        this.viewer.play();
+    }.bind(this));
 })();
     </script>
 </body>

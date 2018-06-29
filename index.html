@@ -39,6 +39,7 @@
 </head>
 <body>
     <center>
+      <p>tap/click to page to start</p>
 <!--        <div id="wrapper"></div> -->
 <div id="target"></div>
 
@@ -51,6 +52,7 @@
       document.body.addEventListener('click', function() {
           this.viewer.play();
       }.bind(this));
+      document.querySelector(containerSelector).addEventListener('touchend', this.viewer.play.bind(this.viewer));
 
     </script>
 </body>
