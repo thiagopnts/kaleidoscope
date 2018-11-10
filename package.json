@@ -7,7 +7,7 @@
   "scripts": {
     "test": "karma start --single-run",
     "build": "rollup -c",
-    "build-prod": "BABEL_ENV=production rollup -c && cat dist/kaleidoscope.js | uglifyjs -m -c > dist/kaleidoscope.min.js && cat dist/kaleidoscope.iife.js | uglifyjs -m toplevel -c  > dist/kaleidoscope.iife.min.js"
+    "build-release": "BABEL_ENV=production rollup -c && cat dist/kaleidoscope.js | uglifyjs -m -c > dist/kaleidoscope.min.js && cat dist/kaleidoscope.iife.js | uglifyjs -m toplevel -c  > dist/kaleidoscope.iife.min.js"
   },
   "files": [
     "package.json",
@@ -22,7 +22,7 @@
   "babel": {
     "presets": [
       [
-        "es2015",
+        "@babel/env",
         {
           "modules": false
         }
@@ -31,12 +31,12 @@
     "env": {
       "production": {
         "presets": [
-          "babili"
+          "minify"
         ]
       }
     },
     "plugins": [
-      "external-helpers"
+      "@babel/plugin-external-helpers"
     ]
   },
   "repository": {
@@ -59,37 +59,22 @@
   },
   "homepage": "https://github.com/thiagopnts/kaleidoscope#readme",
   "devDependencies": {
-    "babel-core": "^6.7.6",
-    "babel-loader": "^6.2.4",
-    "babel-plugin-espower": "^2.3.1",
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-plugin-transform-runtime": "^6.12.0",
-    "babel-preset-babili": "^0.1.4",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-es2015-rollup": "^1.1.1",
-    "babel-preset-stage-2": "^6.11.0",
-    "babel-register": "^6.11.6",
-    "chai": "^3.5.0",
-    "jsdom": "^9.4.1",
-    "karma": "^1.1.2",
-    "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^1.0.1",
-    "karma-firefox-launcher": "^1.0.0",
-    "karma-jasmine": "^1.0.2",
-    "karma-mocha": "^1.1.1",
-    "karma-rollup-plugin": "^0.2.0",
-    "karma-sinon": "^1.0.5",
-    "mocha": "^2.5.3",
-    "rollup": "^0.42.0",
-    "rollup-plugin-babel": "^2.6.1",
-    "rollup-plugin-commonjs": "^3.0.2",
-    "rollup-plugin-node-resolve": "^1.7.1",
-    "rollup-plugin-strip": "^1.1.1",
-    "rollup-plugin-uglify": "^1.0.1",
-    "sinon": "^1.17.3",
-    "uglify-js": "^3.0.26"
+    "@babel/core": "^7.1.5",
+    "@babel/plugin-external-helpers": "^7.0.0",
+    "@babel/preset-env": "^7.1.5",
+    "babel-preset-minify": "^0.5.0",
+    "jasmine-core": "^3.3.0",
+    "karma": "^3.1.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jasmine": "^1.1.2",
+    "rollup": "^0.67.0",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-strip": "^1.2.0",
+    "uglify-js": "^3.4.9"
   },
   "dependencies": {
-    "threejs360": "1.0.3"
+    "threejs360": "^1.0.3"
   }
 }
