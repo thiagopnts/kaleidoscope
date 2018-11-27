@@ -38,15 +38,17 @@ module.exports = function(config) {
       // rollup settings. See Rollup documentation
       plugins: [
         babel(),
-		nodeResolve({
-			jsnext: true,
-			browser: true,
-		}),
-		commonjs(),
+        nodeResolve({
+          jsnext: true,
+          browser: true,
+        }),
+        commonjs(),
       ],
+      output: {
+        format: 'cjs',
+        sourcemap: 'inline'
+      },
       // will help to prevent conflicts between different tests entries
-      format: 'cjs',
-      sourceMap: 'inline'
     },
 
 
