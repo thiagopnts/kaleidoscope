@@ -1,5 +1,5 @@
 {
-  "name": "kaleidoscopejs",
+  "name": "@thiagopnts/kaleidoscope",
   "version": "1.0.18",
   "description": "360º video/image viewer",
   "main": "dist/kaleidoscope.min.js",
