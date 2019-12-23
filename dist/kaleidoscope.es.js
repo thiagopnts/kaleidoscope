@@ -15553,16 +15553,25 @@ function () {
     this.scene = this.createScene();
     this.scene.add(this.camera);
     this.element = this.getElement();
+    this.elementReady = false;
     this.element.addEventListener('playing', this.startVideoLoop);
     this.element.addEventListener('pause', this.stopVideoLoop);
     this.element.addEventListener('ended', this.stopVideoLoop);
-    this.texture = this.createTexture();
-    this.renderer.setTexture(this.texture);
-    this.scene.getObjectByName('photo').children = [this.renderer.mesh];
+    this.element.addEventListener('loadedmetadata', this.initAfterLoadedMetadata.bind(this));
     this.target = this.container ? this.container : document.querySelector(this.containerId);
   }
 
   _createClass(ThreeSixtyViewer, [{
+    key: "initAfterLoadedMetadata",
+    value: function initAfterLoadedMetadata() {
+      if (this.element.readyState >= 1 && !this.elementReady) {
+        this.texture = this.createTexture();
+        this.renderer.setTexture(this.texture);
+        this.scene.getObjectByName('photo').children = [this.renderer.mesh];
+        this.elementReady = true;
+      }
+    }
+  }, {
     key: "play",
     value: function play() {
       this.element.play && this.element.play();
