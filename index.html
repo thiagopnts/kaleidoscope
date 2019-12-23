@@ -47,13 +47,14 @@
 
     <script type="text/javascript" charset="utf-8" src="dist/kaleidoscope.min.js"> </script>
     <script type="text/javascript" charset="utf-8">
-      this.viewer = new Kaleidoscope.Video({autoplay: true, muted: false, height: 360, width: 640, source: 'http://thiago.me/demo-360/cool.mp4', containerId: '#target'});
-      this.viewer.render();
-      document.body.addEventListener('click', function() {
-          this.viewer.play();
-      }.bind(this));
-      document.querySelector(containerSelector).addEventListener('touchend', this.viewer.play.bind(this.viewer));
-
+      window.addEventListener('DOMContentLoaded', function(e) {
+        this.viewer = new Kaleidoscope.Video({autoplay: true, muted: false, height: 360, width: 640, source: 'http://thiago.me/demo-360/cool.mp4', containerId: '#target'});
+        this.viewer.render();
+        document.body.addEventListener('click', function() {
+            this.viewer.play();
+        }.bind(this));
+        document.querySelector('#target').addEventListener('touchend', this.viewer.play.bind(this.viewer));
+      })
     </script>
 </body>
 </html>
