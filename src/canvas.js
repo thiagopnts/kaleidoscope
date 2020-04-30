@@ -1,56 +1,74 @@
 import ThreeSixtyViewer from './three-sixty-viewer';
+import * as THREE from 'three';
 
 export default class Canvas extends ThreeSixtyViewer {
   constructor(options) {
     super(options);
-    this.context = this.element.getContext('2d');
   }
 
-  play() {
-    this.video.play && this.video.play();
-  }
+  createTexture() {
+    this.videoWidth = this.element.videoWidth;
+    this.videoHeight = this.element.videoHeight;
 
-  pause() {
-    this.video.pause && this.video.pause();
-  }
+    this.canvas = document.createElement('canvas');
 
-  destroy() {
-    this.video.style.display = '';
-    super.destroy();
-  }
+    this.context = this.canvas.getContext('2d');
 
-  getElement() {
-    this.video = super.getElement();
-    this.video.addEventListener('playing', this.startVideoLoop);
-    this.video.addEventListener('pause', this.stopVideoLoop);
-    this.video.addEventListener('ended', this.stopVideoLoop);
-    let canvas = document.createElement('canvas');
-    canvas.height = this.video.videoHeight;
-    canvas.width = this.video.videoWidth;
-    return canvas;
+    let texture = new THREE.CanvasTexture(this.canvas);
+    //TODO: we can pass all this info through the constructor
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.format = THREE.RGBFormat;
+    texture.generateMipmaps = false;
+    texture.needsUpdate = true;
+    return texture;
   }
 
   render() {
     this.target.appendChild(this.renderer.el);
-    this.video.style.display = 'none';
-    let loop = () => {
-      this.animationFrameId = requestAnimationFrame(loop);
-      let h = this.video.videoHeight;
-      let w = this.video.videoWidth;
-      if (this.element.height != h) {
-	this.element.height = h;
+    this.element.style.display = 'none';
+
+    let fps = 1000 / 30;
+
+    let draw = () => {
+      if(this.needsUpdate == true) {
+        if (this.element.width != this.videoWidth) {
+          this.videoWidth = this.element.videoWidth;
+        }
+        if (this.element.height != this.videoHeight) {
+          this.videoHeight = this.element.videoHeight;
+        }
+
+        this.context.drawImage(this.element, 0, 0, this.videoWidth, this.videoHeight);
+        this.texture.needsUpdate = true;
       }
-      if (this.element.width != w) {
-	this.element.width = w;
-      }
-      this.context.clearRect(0, 0, w, h);
-      this.context.drawImage(this.video, 0, 0, w, h);
+
       let cameraUpdated = this.controls.update();
       this.renderer.render(this.scene, this.camera, this.needsUpdate || cameraUpdated);
-      this.renderer.mesh.material.map.needsUpdate = true
-      this.needsUpdate = false;
+    }
+
+    let loop = () => {
+      this.videoLoopId = setInterval(() => {
+        this.animationFrameId = requestAnimationFrame(draw);
+      }, fps);
     };
-    this.startVideoLoop();
-    loop();
+
+    let waitLoop = () => {
+      if(this.element.videoWidth != 0 && this.element.videoHeight != 0) {
+        this.videoWidth = this.element.videoWidth;
+        this.videoHeight = this.element.videoHeight;
+
+        this.canvas.width = this.videoWidth;
+        this.canvas.height = this.videoHeight;
+
+        loop();
+
+        return;
+      }
+
+      setTimeout(waitLoop, 100);
+    }
+
+    waitLoop();
   }
 }

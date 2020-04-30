@@ -1,7 +1,6 @@
-import babel from 'rollup-plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
-import nodeResolve from 'rollup-plugin-node-resolve';
-import strip from 'rollup-plugin-strip';
+import babel from '@rollup/plugin-babel';
+import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from '@rollup/plugin-node-resolve';
 
 const name = 'Kaleidoscope';
 const output = [
@@ -21,8 +20,10 @@ export default {
       jsnext: true,
       browser: true,
     }),
-    strip({debugger: true, sourceMap: false}),
     commonjs(),
-    babel(),
+    babel({
+      exclude: 'node_modules/**',
+      babelHelpers: 'bundled'
+    }),
   ],
 };

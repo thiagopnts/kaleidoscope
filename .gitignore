@@ -4,3 +4,4 @@ node_modules/
 .DS_Store
 *.mp4
 *.html
+package-lock.json

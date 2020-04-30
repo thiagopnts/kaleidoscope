@@ -11,6 +11,8 @@ export default {
     return isOldiOSOnIphone || isWebView;
   },
   shouldUseCanvasInBetween() {
-    return /trident|edge/i.test(navigator.userAgent);
+    let edge = /trident|edge/i.test(navigator.userAgent);
+    let ios = this.isiOS();
+    return edge || ios;
   },
 }

@@ -7,7 +7,7 @@
   "scripts": {
     "test": "karma start --single-run",
     "build": "rollup -c",
-    "build-release": "BABEL_ENV=production rollup -c && cat dist/kaleidoscope.js | uglifyjs -m -c > dist/kaleidoscope.min.js && cat dist/kaleidoscope.iife.js | uglifyjs -m toplevel -c  > dist/kaleidoscope.iife.min.js"
+    "build-release": "BABEL_ENV=production rollup -c && babel dist/kaleidoscope.js --presets minify > dist/kaleidoscope.min.js && babel dist/kaleidoscope.iife.js --presets minify > dist/kaleidoscope.iife.min.js"
   },
   "files": [
     "package.json",
@@ -22,11 +22,12 @@
   "babel": {
     "presets": [
       [
-        "@babel/env",
+        "@babel/preset-env",
         {
-          "modules": false
+          "modules": "auto"
         }
-      ]
+      ],
+      "minify"
     ],
     "env": {
       "production": {
@@ -35,9 +36,7 @@
         ]
       }
     },
-    "plugins": [
-      "@babel/plugin-external-helpers"
-    ]
+    "plugins": []
   },
   "repository": {
     "type": "git",
@@ -59,10 +58,14 @@
   },
   "homepage": "https://github.com/thiagopnts/kaleidoscope#readme",
   "devDependencies": {
-    "@babel/core": "^7.1.5",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
     "@babel/plugin-external-helpers": "^7.0.0",
-    "@babel/preset-env": "^7.1.5",
-    "babel-preset-minify": "^0.5.0",
+    "@babel/preset-env": "^7.9.6",
+    "@rollup/plugin-babel": "^5.0.0",
+    "@rollup/plugin-commonjs": "^11.1.0",
+    "@rollup/plugin-node-resolve": "^7.1.3",
+    "babel-preset-minify": "^0.5.1",
     "chai": "^4.2.0",
     "jasmine-core": "^3.3.0",
     "karma": "^3.1.1",
@@ -70,18 +73,14 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.2",
     "karma-mocha": "^1.3.0",
-    "karma-rollup-preprocessor": "^6.1.0",
+    "karma-rollup-preprocessor": "^7.0.5",
     "karma-sinon": "^1.0.5",
     "mocha": "^5.2.0",
-    "rollup": "^0.67.0",
-    "rollup-plugin-babel": "^4.0.3",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-node-resolve": "^3.4.0",
-    "rollup-plugin-strip": "^1.2.0",
+    "rollup": "^2.7.5",
     "sinon": "^7.1.1",
-    "uglify-js": "^3.4.9"
+    "uglify-js": "^3.9.1"
   },
   "dependencies": {
-    "threejs360": "^1.0.3"
+    "three": "0.115.0"
   }
 }
