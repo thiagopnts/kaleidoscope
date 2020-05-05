@@ -4,12 +4,11 @@ import * as THREE from 'three';
 export default class Canvas extends ThreeSixtyViewer {
   constructor(options) {
     super(options);
+
+    this.canvas = null;
   }
 
   createTexture() {
-    this.videoWidth = this.element.videoWidth;
-    this.videoHeight = this.element.videoHeight;
-
     this.canvas = document.createElement('canvas');
 
     this.context = this.canvas.getContext('2d');
@@ -54,7 +53,7 @@ export default class Canvas extends ThreeSixtyViewer {
     };
 
     let waitLoop = () => {
-      if(this.element.videoWidth != 0 && this.element.videoHeight != 0) {
+      if(this.canvas && this.element.videoWidth != 0 && this.element.videoHeight != 0) {
         this.videoWidth = this.element.videoWidth;
         this.videoHeight = this.element.videoHeight;
 
