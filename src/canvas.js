@@ -31,11 +31,13 @@ export default class Canvas extends ThreeSixtyViewer {
 
     let draw = () => {
       if(this.needsUpdate == true) {
-        if (this.element.width != this.videoWidth) {
+        if (this.element.videoWidth != this.videoWidth) {
           this.videoWidth = this.element.videoWidth;
+          this.canvas.width = this.videoWidth;
         }
-        if (this.element.height != this.videoHeight) {
+        if (this.element.videoHeight != this.videoHeight) {
           this.videoHeight = this.element.videoHeight;
+          this.canvas.height = this.videoHeight;
         }
 
         this.context.drawImage(this.element, 0, 0, this.videoWidth, this.videoHeight);
