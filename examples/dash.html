@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Kaleidoscope dash video example</title>
-    <script type="text/javascript" charset="utf-8" src="https://cdn.rawgit.com/thiagopnts/kaleidoscope/master/dist/kaleidoscope.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="../dist/kaleidoscope.min.js"> </script>
     <script src="http://cdn.dashjs.org/latest/dash.all.min.js"></script>
 </head>
 <body>
@@ -21,7 +21,7 @@
         window.onresize = function() {
             viewer.setSize({height: window.innerHeight, width: window.innerWidth});
         }.bind(this);
-        document.querySelector(containerSelector).addEventListener('touchend', this.viewer.play.bind(this.viewer));
+        document.getElementById('container360').addEventListener('touchend', this.viewer.play.bind(this.viewer));
         document.body.addEventListener('click', function() {
             this.viewer.play();
         }.bind(this));

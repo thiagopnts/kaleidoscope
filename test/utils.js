@@ -51,9 +51,9 @@ describe('utils', () => {
 
   it('#shouldUseCanvasInBetween', () => {
     setUserAgent(iphoneUserAgent);
-    assert.ok(!utils.shouldUseCanvasInBetween());
+    assert.ok(utils.shouldUseCanvasInBetween());
     setUserAgent(ios10UserAgent);
-    assert.ok(!utils.shouldUseCanvasInBetween());
+    assert.ok(utils.shouldUseCanvasInBetween());
 
     setUserAgent(edgeUserAgent);
     assert.ok(utils.shouldUseCanvasInBetween());

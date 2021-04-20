@@ -1,5 +1,5 @@
 import ThreeSixtyViewer from './three-sixty-viewer';
-import THREE from 'threejs360';
+import * as THREE from 'three';
 
 export default class Audio extends ThreeSixtyViewer {
   constructor(options) {
@@ -53,21 +53,6 @@ export default class Audio extends ThreeSixtyViewer {
     return texture;
   }
 
-  startVideoLoop() {
-    let videoFps = 1000 / 25;
-    if (this.videoLoopId) {
-      clearTimeout(this.videoLoopId);
-      this.videoLoopId = null;
-    }
-    let videoLoop = () => {
-      this.element.currentTime = this.driver.currentTime;
-      this.needsUpdate = true;
-      this.videoLoopId = setTimeout(videoLoop, videoFps);
-    }
-
-    videoLoop();
-  }
-
   destroy() {
     this.driver.style.display = '';
     super.destroy();
@@ -77,19 +62,39 @@ export default class Audio extends ThreeSixtyViewer {
     this.target.appendChild(this.renderer.el);
     this.element.style.display = 'none';
     this.driver.style.display = 'none';
-    let loop = () => {
+
+    let fps = 1000 / 30;
+
+    let draw = () => {
+      this.element.currentTime = this.driver.currentTime;
+
       let cameraUpdated = this.controls.update();
       this.renderer.render(this.scene, this.camera, this.needsUpdate || cameraUpdated);
-      this.needsUpdate = false;
-      this.animationFrameId = requestAnimationFrame(loop);
-      let shouldInitializeDriver = (this.element.readyState >= this.element.HAVE_FUTURE_DATA) && !this.driverInitialized;
-      if (shouldInitializeDriver) {
-        this.driver.src = this.source;
-        this.driver.load();
-        this.onDriverReady && this.onDriverReady();
-        this.driverInitialized = true;
-      }
+    }
+
+    let loop = () => {
+      this.videoLoopId = setInterval(() => {
+        this.animationFrameId = requestAnimationFrame(draw);
+      }, fps);
     };
-    loop();
+
+    let waitLoop = () => {
+      if (this.element.videoWidth != 0 && this.element.videoHeight != 0) {
+        let shouldInitializeDriver = (this.element.readyState >= this.element.HAVE_FUTURE_DATA) && !this.driverInitialized;
+        if (shouldInitializeDriver) {
+          this.driver.src = this.source;
+          this.driver.load();
+          this.onDriverReady && this.onDriverReady();
+          this.driverInitialized = true;
+
+          loop();
+          return;
+        }
+      }
+
+      setTimeout(waitLoop, 100);
+    }
+
+    waitLoop();
   }
 }

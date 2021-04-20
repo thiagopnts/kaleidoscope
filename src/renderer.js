@@ -1,4 +1,4 @@
-import THREE from 'threejs360';
+import * as THREE from 'three';
 
 export default class Renderer {
   constructor(options) {

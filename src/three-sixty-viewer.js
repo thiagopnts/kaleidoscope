@@ -2,7 +2,9 @@ import Renderer from './renderer'
 import utils from './utils'
 import Controls from './controls'
 
-import THREE from 'threejs360';
+import * as THREE from 'three';
+
+let consol = console;
 
 export default class ThreeSixtyViewer {
   constructor(options={}) {
@@ -32,7 +34,6 @@ export default class ThreeSixtyViewer {
     this.startVideoLoop = this.startVideoLoop.bind(this);
     this.needsUpdate = false;
     this.scene = this.createScene();
-    this.scene.add(this.camera);
     this.element = this.getElement();
     this.elementReady = false;
     this.element.addEventListener('playing', this.startVideoLoop);
@@ -46,7 +47,7 @@ export default class ThreeSixtyViewer {
     if (this.element.readyState >= 1 && !this.elementReady) {
       this.texture = this.createTexture();
       this.renderer.setTexture(this.texture);
-      this.scene.getObjectByName('photo').children = [this.renderer.mesh];
+      this.scene.add(this.renderer.mesh);
       this.elementReady = true;
     }
   }
@@ -64,14 +65,12 @@ export default class ThreeSixtyViewer {
   }
 
   stopVideoLoop() {
-    clearTimeout(this.videoLoopId);
-    this.videoLoopId = null;
     this.needsUpdate = false;
   }
 
   destroy() {
     this.element.style.display = '';
-    clearTimeout(this.videoLoopId);
+    clearInterval(this.videoLoopId);
     cancelAnimationFrame(this.animationFrameId);
     this.element.pause && this.element.pause();
     this.target.removeChild(this.renderer.el);
@@ -86,8 +85,9 @@ export default class ThreeSixtyViewer {
   }
 
   getElement() {
-    if (this.source && this.source.tagName)
+    if (this.source && this.source.tagName) {
       return this.source;
+    }
     let video = document.createElement('video');
     video.loop = this.loop || false;
     video.muted = this.muted || false;
@@ -101,7 +101,7 @@ export default class ThreeSixtyViewer {
   }
 
   createTexture() {
-    let texture = new THREE.Texture(this.element);
+    let texture = new THREE.VideoTexture(this.element);
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.format = THREE.RGBFormat;
@@ -112,43 +112,44 @@ export default class ThreeSixtyViewer {
 
   createScene() {
     let scene = new THREE.Scene();
-    let group = new THREE.Object3D();
-    group.name = 'photo';
-    scene.add(group);
     return scene;
   }
 
   onError(err) {
-    console.error('error loading', this.source, err);
+    consol.error('error loading', this.source, err);
   }
 
   startVideoLoop() {
-    let videoFps = 1000 / 25;
-    if (this.videoLoopId) {
-      clearTimeout(this.videoLoopId);
-      this.videoLoopId = null;
-    }
-    let videoLoop = () => {
-      this.needsUpdate = true;
-      this.videoLoopId = setTimeout(videoLoop, videoFps);
-    }
-
-    videoLoop();
+    this.needsUpdate = true;
   }
 
   render() {
     this.target.appendChild(this.renderer.el);
     this.element.style.display = 'none';
 
-    let loop = () => {
-      this.animationFrameId = requestAnimationFrame(loop);
+    let fps = 1000 / 30;
+
+    let draw = () => {
       let cameraUpdated = this.controls.update();
       this.renderer.render(this.scene, this.camera, this.needsUpdate || cameraUpdated);
-      this.needsUpdate = false;
+    }
+
+    let loop = () => {
+      this.videoLoopId = setInterval(() => {
+        this.animationFrameId = requestAnimationFrame(draw);
+      }, fps);
     };
 
-    this.startVideoLoop();
-    loop();
+    let waitLoop = () => {
+      if (this.element.videoWidth != 0 && this.element.videoHeight != 0) {
+        loop();
+        return;
+      }
+
+      setTimeout(waitLoop, 100);
+    }
+
+    waitLoop();
   }
 }
 
