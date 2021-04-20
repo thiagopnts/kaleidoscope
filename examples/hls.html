@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Kaleidoscope hls video example</title>
-    <script type="text/javascript" charset="utf-8" src="https://cdn.rawgit.com/thiagopnts/kaleidoscope/master/dist/kaleidoscope.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="../dist/kaleidoscope.min.js"> </script>
     <script src="https://cdn.jsdelivr.net/hls.js/latest/hls.min.js"></script>
 </head>
 <body>
@@ -17,7 +17,6 @@
 
          hls.loadSource('https://bitmovin-a.akamaihd.net/content/playhouse-vr/m3u8s/105560.m3u8');
          hls.attachMedia(video);
-
 
          hls.on(Hls.Events.MANIFEST_PARSED,function() {
              video.play()
@@ -37,7 +36,7 @@
         document.body.addEventListener('click', function() {
             this.viewer.play();
         }.bind(this));
-        document.querySelector(containerSelector).addEventListener('touchend', this.viewer.play.bind(this.viewer));
+        document.getElementById('container360').addEventListener('touchend', this.viewer.play.bind(this.viewer));
      } else {
          alert("HLS.js doesn't work with your current browser");
      }
